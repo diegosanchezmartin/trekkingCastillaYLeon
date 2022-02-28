@@ -17,11 +17,11 @@
             </ion-card-header>
             <ion-card-content>
                 <form @submit.prevent="
-                mode === ModoDeAutenticacion.IniciarSesion 
+                modo === ModoDeAutenticacion.IniciarSesion 
                 ? IniciarSesionConEmailYConstaseña(email, contraseña) 
-                : registrarseConEmailYContraseña(nombre, email, contraseña)
-                ">
-                    <ion-item v-if="mode === ModoDeAutenticacion.Registrarse">
+                : RegistrarseConEmailYContraseña(nombre, email, contraseña)"
+                >
+                    <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
                         <ion-label position="floating">Nombre</ion-label>
                         <ion-input v-model="nombre"></ion-input>
                     </ion-item>
@@ -31,13 +31,13 @@
                     </ion-item>
                     <ion-item>
                         <ion-label position="floating">Contraseña</ion-label>
-                        <ion-input v-model="contraseña"></ion-input>
+                        <ion-input v-model="contraseña" type="password"></ion-input>
                     </ion-item>
                     <ion-button expand="block" color="primary" class="ion-margin-top" type="submit">
-                        {{mode === ModoDeAutenticacion.IniciarSesion ? "Iniciar sesión" : "Registrarse"}}
+                        {{modo === ModoDeAutenticacion.IniciarSesion ? "Iniciar sesión" : "Registrarse"}}
                     </ion-button>
-                    <ion-button expand="block" color="secondary" class="ion-margin-top" @click="mode = mode === ModoDeAutenticacion.IniciarSesion ? ModoDeAutenticacion.Registrarse : ModoDeAutenticacion.IniciarSesion">
-                        {{mode === ModoDeAutenticacion.Registrarse ? "Registrarse" : "Cancelar"}}
+                    <ion-button expand="block" color="secondary" class="ion-margin-top" @click="modo = modo === ModoDeAutenticacion.IniciarSesion ? ModoDeAutenticacion.Registrarse : ModoDeAutenticacion.IniciarSesion ">
+                        {{modo === ModoDeAutenticacion.IniciarSesion ? "Registrarse" : "Cancelar"}}
                     </ion-button>
                 </form>
             </ion-card-content>
@@ -57,6 +57,7 @@ import {
         IonTitle, 
         IonContent, 
         IonCard, 
+        IonCardHeader,        
         IonCardSubtitle, 
         IonCardTitle, 
         IonCardContent, 
@@ -71,7 +72,7 @@ import {useRouter} from "vue-router";
 
 enum ModoDeAutenticacion{
     IniciarSesion,
-    Registrarse
+    Registrarse,
 }
 
 export default {
@@ -89,7 +90,8 @@ export default {
         IonInput, 
         IonButton, 
         IonLabel, 
-        IonItem
+        IonItem,
+        IonCardHeader,
     }, 
     setup() {
         const router = useRouter();
@@ -101,7 +103,10 @@ export default {
             mensajeError:""
         })
 
-        const IniciarSesionConEmailYConstaseña = async (email: string, contraseña: string) => {
+        const IniciarSesionConEmailYConstaseña = async (
+            email: string, 
+            contraseña: string
+        ) => {
             try {
                 if(!email || !contraseña) {
                     state.mensajeError="Email y constraseña requeridos!"
@@ -111,14 +116,14 @@ export default {
                 await auth.signInWithEmailAndPassword(email, contraseña);
                 router.push("/tab/tab1")
             
-            } catch (error) {
+            } catch (error: unknown) {
                 if(error instanceof Error) {
                     state.mensajeError = error.message;
                 }
             }
         }
 
-        const registrarseConEmailYContraseña = async (
+        const RegistrarseConEmailYContraseña = async (
             nombre:string, 
             email:string, 
             contraseña: string 
@@ -137,7 +142,7 @@ export default {
                 });
 
                 router.push("/tabs/tab1");
-            } catch(error){
+            } catch(error: unknown){
                 if(error instanceof Error) {
                     state.mensajeError = error.message;
                 }
@@ -147,7 +152,7 @@ export default {
         return {
             ...toRefs(state),
             IniciarSesionConEmailYConstaseña,
-            registrarseConEmailYContraseña,
+            RegistrarseConEmailYContraseña,
             ModoDeAutenticacion,
         };
     },
