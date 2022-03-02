@@ -5,6 +5,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
+//import { isPlatform } from '@ionic/vue';
 import { IonicVue } from '@ionic/vue';
 
 /* Core CSS required for Ionic components to work properly */
@@ -24,7 +25,7 @@ import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css'; 
+import './theme/variables.css';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -45,10 +46,14 @@ const appFirebase = firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
 const app = createApp(App)
   .use(IonicVue)
   .use(router);
   
 router.isReady().then(() => {
   app.mount('#app');
+
+  defineCustomElements(window);
 });

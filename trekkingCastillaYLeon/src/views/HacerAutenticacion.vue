@@ -65,17 +65,16 @@ import {
         IonButton, 
         IonLabel, 
         IonItem } from '@ionic/vue';
-
 import {auth, db} from '../main';
 import {reactive, toRefs} from "vue";
-import {useRouter} from "vue-router";
+import {useIonRouter} from '@ionic/vue';
+import {defineComponent} from 'vue';
 
 enum ModoDeAutenticacion{
     IniciarSesion,
     Registrarse,
 }
-
-export default {
+export default defineComponent({
     nombre: "HacerAutenticacion",
     components: {
         IonPage, 
@@ -94,15 +93,14 @@ export default {
         IonCardHeader,
     }, 
     setup() {
-        const router = useRouter();
+        const ionRouter = useIonRouter();
         const state = reactive ({
             nombre: "",
             email: "",
-            constraseña: "",
+            contraseña: "",
             modo: ModoDeAutenticacion.IniciarSesion,
             mensajeError:""
         })
-
         const IniciarSesionConEmailYConstaseña = async (
             email: string, 
             contraseña: string
@@ -112,9 +110,8 @@ export default {
                     state.mensajeError="Email y constraseña requeridos!"
                     return;
                 }
-
                 await auth.signInWithEmailAndPassword(email, contraseña);
-                router.push("/tab/tab1")
+                ionRouter.push("/tabs/tab1")
             
             } catch (error: unknown) {
                 if(error instanceof Error) {
@@ -122,7 +119,6 @@ export default {
                 }
             }
         }
-
         const RegistrarseConEmailYContraseña = async (
             nombre:string, 
             email:string, 
@@ -133,22 +129,18 @@ export default {
                     state.mensajeError = "Nombre, email y constraseña requeridos para registrarte!";
                     return;
                 } 
-
                 const authRes = await auth.createUserWithEmailAndPassword(email, contraseña);
-
                 db.collection('users').doc(authRes.user?.uid).set({
                     nombre,
                     email,
                 });
-
-                router.push("/tabs/tab1");
+                ionRouter.push("/tabs/tab1");
             } catch(error: unknown){
                 if(error instanceof Error) {
                     state.mensajeError = error.message;
                 }
             }
         };
-
         return {
             ...toRefs(state),
             IniciarSesionConEmailYConstaseña,
@@ -156,9 +148,8 @@ export default {
             ModoDeAutenticacion,
         };
     },
-};
+});
 </script>
 
 <style>
-
 </style>
