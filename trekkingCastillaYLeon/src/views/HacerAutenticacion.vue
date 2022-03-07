@@ -18,8 +18,8 @@
             <ion-card-content>
                 <form @submit.prevent="
                 modo === ModoDeAutenticacion.IniciarSesion 
-                ? IniciarSesionConEmailYConstaseña(email, contraseña) 
-                : RegistrarseConEmailYContraseña(nombre, email, contraseña)"
+                ? IniciarSesionConEmailYConstaseña(email, contrasena) 
+                : RegistrarseConEmailYcontrasena(nombre, email, contrasena)"
                 >
                     <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
                         <ion-label position="floating">Nombre</ion-label>
@@ -30,8 +30,8 @@
                         <ion-input v-model="email"></ion-input>
                     </ion-item>
                     <ion-item>
-                        <ion-label position="floating">Contraseña</ion-label>
-                        <ion-input v-model="contraseña" type="password"></ion-input>
+                        <ion-label position="floating">contrasena</ion-label>
+                        <ion-input v-model="contrasena" type="password"></ion-input>
                     </ion-item>
                     <ion-button expand="block" color="primary" class="ion-margin-top" type="submit">
                         {{modo === ModoDeAutenticacion.IniciarSesion ? "Iniciar sesión" : "Registrarse"}}
@@ -97,20 +97,20 @@ export default defineComponent({
         const state = reactive ({
             nombre: "",
             email: "",
-            contraseña: "",
+            contrasena: "",
             modo: ModoDeAutenticacion.IniciarSesion,
             mensajeError:""
         })
         const IniciarSesionConEmailYConstaseña = async (
             email: string, 
-            contraseña: string
+            contrasena: string
         ) => {
             try {
-                if(!email || !contraseña) {
+                if(!email || !contrasena) {
                     state.mensajeError="Email y constraseña requeridos!"
                     return;
                 }
-                await auth.signInWithEmailAndPassword(email, contraseña);
+                await auth.signInWithEmailAndPassword(email, contrasena);
                 ionRouter.push("/tabs/tab1")
             
             } catch (error: unknown) {
@@ -119,17 +119,17 @@ export default defineComponent({
                 }
             }
         }
-        const RegistrarseConEmailYContraseña = async (
+        const RegistrarseConEmailYcontrasena = async (
             nombre:string, 
             email:string, 
-            contraseña: string 
+            contrasena: string 
         ) => {
             try {
-                if (!nombre || !email || !contraseña) {
+                if (!nombre || !email || !contrasena) {
                     state.mensajeError = "Nombre, email y constraseña requeridos para registrarte!";
                     return;
                 } 
-                const authRes = await auth.createUserWithEmailAndPassword(email, contraseña);
+                const authRes = await auth.createUserWithEmailAndPassword(email, contrasena);
                 db.collection('users').doc(authRes.user?.uid).set({
                     nombre,
                     email,
@@ -144,7 +144,7 @@ export default defineComponent({
         return {
             ...toRefs(state),
             IniciarSesionConEmailYConstaseña,
-            RegistrarseConEmailYContraseña,
+            RegistrarseConEmailYcontrasena,
             ModoDeAutenticacion,
         };
     },

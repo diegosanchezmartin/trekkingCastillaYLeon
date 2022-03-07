@@ -4,6 +4,7 @@ import router from './router';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import {initializeAuth, browserSessionPersistence} from "firebase/auth";
 
 //import { isPlatform } from '@ionic/vue';
 import { IonicVue } from '@ionic/vue';
@@ -43,6 +44,8 @@ const firebaseConfig = {
 const appFirebase = firebase.initializeApp(firebaseConfig);
 //const analytics = getAnalytics(appFirebase);
 
+initializeAuth(appFirebase, {persistence: browserSessionPersistence, 
+  popupRedirectResolver: undefined,});
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 

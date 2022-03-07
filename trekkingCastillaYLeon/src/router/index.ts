@@ -3,7 +3,7 @@ import { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext } from 'vu
 import TabsPage from '../views/TabsPage.vue'
 import { auth } from '../main';
 
-const guard = (to:RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+const guard = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   try {
     if(auth.currentUser?.uid) {
       next();
