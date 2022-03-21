@@ -182,6 +182,8 @@ http://ionicframework.com/docs/theming/ */
     --ion-item-background: #000000;
 
     --ion-card-background: #1c1c1d;
+
+    
   }
 
   .ios ion-modal {
@@ -234,3 +236,4 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: #1e1e1e;
   }
 }
+
