@@ -8,13 +8,13 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-item>
-          <ion-button>
+          <ion-button @click=goAddRoute() color="medium">
             <ion-icon :icon="addCircleOutline" />
           </ion-button>
           <ion-toolbar>
             <ion-title size="large">Explora</ion-title>
           </ion-toolbar>
-          <ion-button>
+          <ion-button color="medium">
             <ion-icon :icon="searchOutline" />
           </ion-button>
         </ion-item>
@@ -26,9 +26,7 @@
             <ion-item>
               <ion-label>
                 <h1>Ascensión al Pico de la Aquiana</h1>
-                <h2>
-                  Campo de las Danzas 14,18kms +15ptos
-                </h2>
+                <h2>Campo de las Danzas 14,18kms +15ptos</h2>
               </ion-label>
             </ion-item>
           </ion-card-header>
@@ -60,21 +58,17 @@
               <ion-col center text-center>
                 <button>
                   <div>Circular</div>
-                   <ion-icon
-                    :icon="repeatOutline"
-                  ></ion-icon>
+                  <ion-icon :icon="repeatOutline"></ion-icon>
                 </button>
               </ion-col>
               <ion-col center text-center>
                 <button>
-                  <div><ion-icon
-                    :icon="starOutline"
-                  /> 4,8</div>
+                  <div><ion-icon :icon="starOutline" /> 4,8</div>
                 </button>
               </ion-col>
               <ion-col center text-center>
                 <button>
-                  <div>hace 6 horas</div>
+                  <div><ion-icon :icon="timeOutline" /> hace 6 horas</div>
                 </button>
               </ion-col>
             </ion-row>
@@ -86,9 +80,7 @@
             <ion-item>
               <ion-label>
                 <h1>Ruta de las fuentes medicinales</h1>
-                <h2>
-                  Noceda del Bierzo 11,23kms +5ptos
-                </h2>
+                <h2>Noceda del Bierzo 11,23kms +5ptos</h2>
               </ion-label>
             </ion-item>
           </ion-card-header>
@@ -120,30 +112,22 @@
               <ion-col center text-center>
                 <button>
                   <div>Lineal</div>
-                   <ion-icon
-                    :icon="resizeOutline"
-                  ></ion-icon>
+                  <ion-icon :icon="resizeOutline"></ion-icon>
                 </button>
               </ion-col>
               <ion-col center text-center>
                 <button>
-                  <div><ion-icon
-                    :icon="starOutline"
-                  /> 4,3</div>
+                  <div><ion-icon :icon="starOutline" /> 4,3</div>
                 </button>
               </ion-col>
               <ion-col center text-center>
                 <button>
-                  <div><ion-icon
-                    :icon="timeOutline"
-                  /> hace 3 horas</div>
+                  <div><ion-icon :icon="timeOutline" /> hace 3 horas</div>
                 </button>
               </ion-col>
             </ion-row>
           </ion-footer>
         </ion-card>
-
-        
       </ion-list>
     </ion-content>
   </ion-page>
@@ -159,8 +143,18 @@ import {
   IonContent,
   IonSlides,
   IonSlide,
+  IonButton,
 } from "@ionic/vue";
-import { starOutline, timeOutline, resizeOutline, repeatOutline, analyticsOutline, addCircleOutline, searchOutline } from "ionicons/icons";
+import {
+  starOutline,
+  timeOutline,
+  resizeOutline,
+  repeatOutline,
+  analyticsOutline,
+  addCircleOutline,
+  searchOutline,
+} from "ionicons/icons";
+import { useIonRouter } from "@ionic/vue";
 
 export default defineComponent({
   name: "Tab1Page",
@@ -172,11 +166,16 @@ export default defineComponent({
     IonPage,
     IonSlides,
     IonSlide,
+    IonButton,
   },
   setup() {
+    const ionRouter = useIonRouter();
     const slideOpts = {
       initialSlide: 0,
       speed: 400,
+    };
+    const goAddRoute = async () => {
+      ionRouter.push("/tabs/anadirRuta");
     };
     return {
       timeOutline,
@@ -187,6 +186,7 @@ export default defineComponent({
       addCircleOutline,
       searchOutline,
       slideOpts,
+      goAddRoute,
     };
   },
 });

@@ -34,6 +34,11 @@ const routes: Array<RouteRecordRaw> = [
         beforeEnter: guard
       },
       {
+        path: 'anadirRuta',
+        component: () => import('@/views/AnadirRuta.vue'),
+        beforeEnter: guard
+      },
+      {
         path: 'tab2',
         component: () => import('@/views/Tab2Page.vue'),
         beforeEnter: guard
