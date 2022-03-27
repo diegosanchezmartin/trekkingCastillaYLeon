@@ -9,7 +9,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <formulario-ruta></formulario-ruta>
+      <formulario-ruta @anadir-ruta="anadirRuta"></formulario-ruta>
     </ion-content>
   </ion-page>
 </template>
@@ -42,11 +42,12 @@ export default defineComponent({
     IonButtons,
     FormularioRuta,
   },
-  /*methods: {
-    saveMemory(memoryData){
-
+  methods: {
+    anadirRuta(memoryData: any){
+      this.$store.dispatch('anadirRuta', memoryData);
+      this.$router.replace('/tabs/tab1');
     }
-  },*/
+  },
   setup() {
     return {
       resizeOutline,

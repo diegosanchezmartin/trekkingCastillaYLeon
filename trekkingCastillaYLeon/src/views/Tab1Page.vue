@@ -8,7 +8,7 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-item>
-          <ion-button @click=goAddRoute() color="medium">
+          <ion-button @click="goAddRoute()" color="medium">
             <ion-icon :icon="addCircleOutline" />
           </ion-button>
           <ion-toolbar>
@@ -21,113 +21,62 @@
       </ion-header>
 
       <ion-list>
-        <ion-card>
-          <ion-card-header>
-            <ion-item>
-              <ion-label>
-                <h1>Ascensión al Pico de la Aquiana</h1>
-                <h2>Campo de las Danzas 14,18kms +15ptos</h2>
-              </ion-label>
-            </ion-item>
-          </ion-card-header>
-          <ion-slides pager="true" :options="slideOpts">
-            <ion-slide>
-              <img src="../pictures/IMG_0955.jpg" />
-            </ion-slide>
-            <ion-slide>
-              <img src="../pictures/IMG_0695.jpg" />
-            </ion-slide>
-            <ion-slide>
-              <img src="../pictures/IMG_0785.jpg" />
-            </ion-slide>
-          </ion-slides>
-          <ion-card-content>
-            <ion-item>
-              <ion-avatar slot="end">
-                <img src="../pictures/FotoPerfil2.jpg" />
-              </ion-avatar>
-              <ion-text color="dark">
-                <h1>Martín Fernández Maroto</h1>
-                <h2>Pateador de campeonato</h2>
-              </ion-text>
-              <ion-text color="medium"> </ion-text>
-            </ion-item>
-          </ion-card-content>
-          <ion-footer>
-            <ion-row>
-              <ion-col center text-center>
-                <button>
-                  <div>Circular</div>
-                  <ion-icon :icon="repeatOutline"></ion-icon>
-                </button>
-              </ion-col>
-              <ion-col center text-center>
-                <button>
-                  <div><ion-icon :icon="starOutline" /> 4,8</div>
-                </button>
-              </ion-col>
-              <ion-col center text-center>
-                <button>
-                  <div><ion-icon :icon="timeOutline" /> hace 6 horas</div>
-                </button>
-              </ion-col>
-            </ion-row>
-          </ion-footer>
-        </ion-card>
-
-        <ion-card>
-          <ion-card-header>
-            <ion-item>
-              <ion-label>
-                <h1>Ruta de las fuentes medicinales</h1>
-                <h2>Noceda del Bierzo 11,23kms +5ptos</h2>
-              </ion-label>
-            </ion-item>
-          </ion-card-header>
-          <ion-slides pager="true" :options="slideOpts">
-            <ion-slide>
-              <img src="../pictures/IMG_0797.jpg" />
-            </ion-slide>
-            <ion-slide>
-              <img src="../pictures/IMG_1303.jpg" />
-            </ion-slide>
-            <ion-slide>
-              <img src="../pictures/IMG_0833.jpg" />
-            </ion-slide>
-          </ion-slides>
-          <ion-card-content>
-            <ion-item>
-              <ion-avatar slot="end">
-                <img src="../pictures/FotoPerfil1.jpg" />
-              </ion-avatar>
-              <ion-text color="dark">
-                <h1>Diego Sánchez Martín</h1>
-                <h2>Novato</h2>
-              </ion-text>
-              <ion-text color="medium"> </ion-text>
-            </ion-item>
-          </ion-card-content>
-          <ion-footer>
-            <ion-row>
-              <ion-col center text-center>
-                <button>
-                  <div>Lineal</div>
-                  <ion-icon :icon="resizeOutline"></ion-icon>
-                </button>
-              </ion-col>
-              <ion-col center text-center>
-                <button>
-                  <div><ion-icon :icon="starOutline" /> 4,3</div>
-                </button>
-              </ion-col>
-              <ion-col center text-center>
-                <button>
-                  <div><ion-icon :icon="timeOutline" /> hace 3 horas</div>
-                </button>
-              </ion-col>
-            </ion-row>
-          </ion-footer>
-        </ion-card>
+        <ion-item v-for="ruta in rutas" v-bind:key="ruta.id">
+          <ion-card>
+            <ion-card-header>
+              <ion-item>
+                <ion-label>
+                  <h1>{{ ruta.nombreRuta }}</h1>
+                  <h2>{{ ruta.infoRuta }} {{ ruta.kilometros }}</h2>
+                </ion-label>
+              </ion-item>
+            </ion-card-header>
+            <ion-slides pager="true" :options="slideOpts">
+              <ion-slide v-for="imagen in ruta.imagenes" v-bind:key="{imagen}" >
+                <img :src="imagen" />
+              </ion-slide>
+            </ion-slides>
+            <ion-card-content>
+              <ion-item>
+                <ion-avatar slot="end">
+                  <img src="../pictures/FotoPerfil2.jpg" />
+                </ion-avatar>
+                <ion-text color="dark">
+                  <h1>{{ ruta.usuario }}</h1>
+                  <h2>{{ ruta.nivelUsuario }}</h2>
+                </ion-text>
+                <ion-text color="medium"> </ion-text>
+              </ion-item>
+            </ion-card-content>
+            <ion-footer>
+              <ion-row>
+                <ion-col center text-center>
+                  <button>
+                    <div>
+                      <ion-icon :icon="repeatOutline"></ion-icon>
+                      {{ ruta.tipoRuta }}
+                    </div>
+                  </button>
+                </ion-col>
+                <ion-col center text-center>
+                  <button>
+                    <div>
+                      <ion-icon :icon="starOutline" /> {{ ruta.valoracion }}
+                    </div>
+                  </button>
+                </ion-col>
+                <ion-col center text-center>
+                  <button>
+                    <div>
+                      <ion-icon :icon="timeOutline" />
+                      {{ ruta.tiempoPublicacion }}
+                    </div>
+                  </button>
+                </ion-col>
+              </ion-row>
+            </ion-footer>
+          </ion-card>
+        </ion-item>
       </ion-list>
     </ion-content>
   </ion-page>
@@ -167,6 +116,28 @@ export default defineComponent({
     IonSlides,
     IonSlide,
     IonButton,
+  },
+  data() {
+    return {
+      rutas: [
+        {
+          id: 1,
+          nombreRuta: "Ascensión al Pico de la Aquiana",
+          infoRuta: "Campo de las Danzas 14,18kms +15ptos",
+          imagenes: [
+              require("../pictures/IMG_0955.jpg"),
+              require("../pictures/IMG_0695.jpg"),
+              require("../pictures/IMG_0785.jpg"),
+          ],
+          usuario: "Martín Fernández Maroto",
+          nivelUsuario: "Pateador de campeonato",
+          tipoRuta: "Circular",
+          valoracion: "4,8",
+          tiempoPublicacion: "hace 6 horas",
+          kilometros: "10",
+        },
+      ],
+    };
   },
   setup() {
     const ionRouter = useIonRouter();
