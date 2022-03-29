@@ -24,6 +24,21 @@
         ></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label>Añade fotos de la ruta</ion-label>
+        <ion-fab horizontal="end" >
+          <ion-fab-button size="small" color="dark" @click="takePhoto()">
+            <ion-icon :icon="addOutline" />
+          </ion-fab-button>
+        </ion-fab>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6" :key="photo" v-for="photo in photos">
+              <ion-img :src="photo.webviewPath"></ion-img>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
         <ion-label position="floating">Categoría</ion-label>
         <ion-select
           interface="popover"
@@ -110,10 +125,20 @@ import {
   IonList,
   IonInput,
   IonButton,
+  IonIcon,
+  IonFab,
+  IonFabButton,
 } from "@ionic/vue";
 
-import { resizeOutline, repeatOutline, flagOutline } from "ionicons/icons";
+import {
+  addOutline,
+  resizeOutline,
+  repeatOutline,
+  flagOutline,
+} from "ionicons/icons";
 import { useStore } from "vuex";
+import { storage } from "../main";
+import { usePhotoGallery, UserPhoto } from "../camera/usePhotoGallery";
 
 export default defineComponent({
   name: "AnadirRuta",
@@ -126,6 +151,9 @@ export default defineComponent({
     IonList,
     IonInput,
     IonButton,
+    IonIcon,
+    IonFab,
+    IonFabButton,
   },
   data() {
     return {
@@ -161,13 +189,17 @@ export default defineComponent({
     },
   },
   setup() {
+    const { photos, takePhoto } = usePhotoGallery();
     const store = useStore();
     return {
       value: computed(() => store.state.count),
       anadirDatos: () => store.dispatch("anadirRuta"),
       resizeOutline,
+      addOutline,
       repeatOutline,
       flagOutline,
+      takePhoto,
+      photos,
     };
   },
 });
