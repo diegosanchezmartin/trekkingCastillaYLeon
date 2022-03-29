@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/HacerAutenticacion.vue')
   },
   {
-    path: '/tabs/',
+    path: '/tabs',
     component: TabsPage,
     children: [
       {
@@ -29,22 +29,22 @@ const routes: Array<RouteRecordRaw> = [
         redirect: '/tabs/tab1'
       },
       {
-        path: 'tab1',
+        path: '/tabs/tab1',
         component: () => import('@/views/Tab1Page.vue'),
         beforeEnter: guard
       },
       {
-        path: 'anadirRuta',
+        path: '/tabs/anadirRutaNueva',
         component: () => import('@/views/AnadirRuta.vue'),
         beforeEnter: guard
       },
       {
-        path: 'tab2',
+        path: '/tabs/tab2',
         component: () => import('@/views/Tab2Page.vue'),
         beforeEnter: guard
       },
       {
-        path: 'tab3',
+        path: '/tabs/tab3',
         component: () => import('@/views/Tab3Page.vue'),
         beforeEnter: guard
       }

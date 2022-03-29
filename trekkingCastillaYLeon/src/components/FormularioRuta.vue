@@ -1,24 +1,35 @@
 <template>
-  <form @submit.prevent="guardarRuta">
+  <form class="ios-padding" @submit.prevent="guardarRuta">
     <ion-list>
       <ion-item>
         <ion-label position="floating"
           >Nombre de la ruta que vas a añadir</ion-label
         >
-        <ion-input clear-input value="" type="text" v-model="nombreRuta"></ion-input>
+        <ion-input
+          clear-input
+          value=""
+          type="text"
+          required
+          v-model="nombreRutaIntroducido"
+        ></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating"
-          >¿Dónde has realizado la ruta?</ion-label
-        >
-        <ion-input clear-input value="" type="text" v-model="infoRuta"></ion-input>
+        <ion-label position="floating">¿Dónde has realizado la ruta?</ion-label>
+        <ion-input
+          clear-input
+          value=""
+          type="text"
+          required
+          v-model="infoRutaIntroducido"
+        ></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Categoría</ion-label>
         <ion-select
           interface="popover"
           placeholder="Selecciona la categoría de la ruta"
-          v-model="tipoRuta"
+          required
+          v-model="tipoRutaIntroducido"
         >
           <ion-select-option value="rutaLineal">Ruta líneal </ion-select-option>
           <ion-select-option value="rutaCircular"
@@ -32,7 +43,6 @@
         <ion-select
           interface="popover"
           placeholder="Selecciona la dificultad de la ruta"
-          
         >
           <ion-select-option value="facil">Fácil</ion-select-option>
           <ion-select-option value="media">Media</ion-select-option>
@@ -44,14 +54,20 @@
         <ion-label position="floating"
           >Introduce cuántos kilómetros has recorrido</ion-label
         >
-        <ion-input clear-input value="" type="text"></ion-input>
+        <ion-input
+          clear-input
+          value=""
+          type="text"
+          v-model="kilometrosIntroducidos"
+        ></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Valoración</ion-label>
         <ion-select
           interface="popover"
           placeholder="Añade una valoración para esta ruta"
-          v-model="valoracion"
+          required
+          v-model="valoracionIntroducido"
         >
           <ion-select-option value="1estrella">1 estrella</ion-select-option>
           <ion-select-option value="2estrellas">2 estrellas</ion-select-option>
@@ -66,7 +82,6 @@
           interface="popover"
           multiple="true"
           placeholder="¿Quieres añadir alguna recomendación?"
-          
         >
           <ion-select-option value="Gorra">Gorra</ion-select-option>
           <ion-select-option value="RaquetasNieve"
@@ -93,6 +108,8 @@ import {
   IonSelectOption,
   IonLabel,
   IonList,
+  IonInput,
+  IonButton,
 } from "@ionic/vue";
 
 import { resizeOutline, repeatOutline, flagOutline } from "ionicons/icons";
@@ -100,39 +117,47 @@ import { useStore } from "vuex";
 
 export default defineComponent({
   name: "AnadirRuta",
-  emits: ["anadirRuta"],
+  emits: ["anadir-ruta"],
   components: {
     IonItem,
     IonSelect,
     IonSelectOption,
     IonLabel,
     IonList,
+    IonInput,
+    IonButton,
   },
   data() {
     return {
-      nombreRuta: "",
-      infoRuta: "",
-      imagenes: "",
-      usuario: "",
-      nivelUsuario: "",
-      tipoRuta: "",
-      valoracion: "",
-      tiempoPublicacion: "",
+      nombreRutaIntroducido: "",
+      infoRutaIntroducido: "",
+      imagenesIntroducidas: "",
+      usuarioIntroducido: "desconocido",
+      nivelUsuarioIntroducido: "",
+      tipoRutaIntroducido: "",
+      valoracionIntroducido: "",
+      tiempoPublicacionIntroducido: "",
+      kilometrosIntroducidos: "",
+      fotoPerfilUsuarioIntroducida: "",
+      iconoIntroducido: "",
     };
   },
   methods: {
     guardarRuta() {
       const memoryData = {
-        nombreRuta: this.nombreRuta,
-        infoRuta: this.infoRuta,
-        imagenes: this.imagenes,
-        usuario: this.usuario,
-        nivelUsuario: this.nivelUsuario,
-        tipoRuta: this.tipoRuta,
-        valoracion: this.valoracion,
-        tiempoPublicacion: this.tiempoPublicacion,
+        nombreRuta: this.nombreRutaIntroducido,
+        infoRuta: this.infoRutaIntroducido,
+        imagenesIntroducido: this.imagenesIntroducidas,
+        usuarioIntroducido: this.usuarioIntroducido,
+        nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
+        tipoRuta: this.tipoRutaIntroducido,
+        valoracion: this.valoracionIntroducido,
+        tiempoPublicacionIntroducido: this.timepoPublicacionIntroducido,
+        kilometros: this.kilometrosIntroducidos,
+        fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
+        iconoIntroducido: this.iconoIntroducido,
       };
-      this.$emit("anadirRuta", memoryData);
+      this.$emit("anadir-ruta", memoryData);
     },
   },
   setup() {

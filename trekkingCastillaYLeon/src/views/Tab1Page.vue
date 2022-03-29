@@ -32,14 +32,14 @@
               </ion-item>
             </ion-card-header>
             <ion-slides pager="true" :options="slideOpts">
-              <ion-slide v-for="imagen in ruta.imagenes" v-bind:key="{imagen}" >
+              <ion-slide v-for="(imagen, index) in ruta.imagenes" v-bind:key="index" >
                 <img :src="imagen" />
               </ion-slide>
             </ion-slides>
             <ion-card-content>
               <ion-item>
                 <ion-avatar slot="end">
-                  <img src="../pictures/FotoPerfil2.jpg" />
+                  <img :src=ruta.fotoPerfilUsuario />
                 </ion-avatar>
                 <ion-text color="dark">
                   <h1>{{ ruta.usuario }}</h1>
@@ -53,7 +53,7 @@
                 <ion-col center text-center>
                   <button>
                     <div>
-                      <ion-icon :icon="repeatOutline"></ion-icon>
+                      <ion-icon :icon=ruta.icono></ion-icon>
                       {{ ruta.tipoRuta }}
                     </div>
                   </button>
@@ -93,6 +93,16 @@ import {
   IonSlides,
   IonSlide,
   IonButton,
+  IonItem,
+  IonList,
+  IonCard,
+  IonCardHeader,
+  IonCardContent,
+  IonLabel,
+  IonAvatar,
+  IonFooter,
+  IonCol,
+  IonRow,
 } from "@ionic/vue";
 import {
   starOutline,
@@ -116,28 +126,21 @@ export default defineComponent({
     IonSlides,
     IonSlide,
     IonButton,
+    IonItem,
+    IonList,
+    IonCard,
+    IonCardHeader,
+    IonCardContent,
+    IonLabel,
+    IonAvatar,
+    IonFooter,
+    IonCol,
+    IonRow,
   },
-  data() {
-    return {
-      rutas: [
-        {
-          id: 1,
-          nombreRuta: "Ascensión al Pico de la Aquiana",
-          infoRuta: "Campo de las Danzas 14,18kms +15ptos",
-          imagenes: [
-              require("../pictures/IMG_0955.jpg"),
-              require("../pictures/IMG_0695.jpg"),
-              require("../pictures/IMG_0785.jpg"),
-          ],
-          usuario: "Martín Fernández Maroto",
-          nivelUsuario: "Pateador de campeonato",
-          tipoRuta: "Circular",
-          valoracion: "4,8",
-          tiempoPublicacion: "hace 6 horas",
-          kilometros: "10",
-        },
-      ],
-    };
+  computed: {
+    rutas() {
+      return this.$store.getters.rutas;
+    }
   },
   setup() {
     const ionRouter = useIonRouter();
@@ -146,7 +149,7 @@ export default defineComponent({
       speed: 400,
     };
     const goAddRoute = async () => {
-      ionRouter.push("/tabs/anadirRuta");
+      ionRouter.push("/tabs/anadirRutaNueva");
     };
     return {
       timeOutline,
