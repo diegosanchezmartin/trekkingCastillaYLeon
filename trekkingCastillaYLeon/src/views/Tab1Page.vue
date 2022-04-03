@@ -26,8 +26,8 @@
             <ion-card-header>
               <ion-item>
                 <ion-label>
-                  <h1>{{ ruta.nombreRuta }}</h1>
-                  <h2>{{ ruta.infoRuta }} {{ ruta.kilometros }}</h2>
+                  <h4>{{ ruta.nombreRuta }}</h4>
+                  <h3>{{ ruta.infoRuta }} {{ ruta.kilometros }}</h3>
                 </ion-label>
               </ion-item>
             </ion-card-header>
@@ -45,7 +45,7 @@
                   <img :src="ruta.fotoPerfilUsuario" />
                 </ion-avatar>
                 <ion-text color="dark">
-                  <h1>{{ ruta.usuario }}</h1>
+                  <h3>{{ ruta.usuario }}</h3>
                   <h2>{{ ruta.nivelUsuario }}</h2>
                 </ion-text>
                 <ion-text color="medium"> </ion-text>

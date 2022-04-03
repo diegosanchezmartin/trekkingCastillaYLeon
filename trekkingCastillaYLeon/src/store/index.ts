@@ -10,9 +10,15 @@ export const store = createStore({
           nombreRuta: "Ruta de las fuentes medicinales",
           infoRuta: "Noceda del Bierzo",
           imagenes: [
-            require("../pictures/IMG_0797.jpg"),
-            require("../pictures/IMG_1303.jpg"),
-            require("../pictures/IMG_0833.jpg"),
+            {
+              webviewPath: require("../pictures/IMG_0797.jpg"),
+            },
+            {
+              webviewPath: require("../pictures/IMG_1303.jpg"),
+            },
+            {
+              webviewPath: require("../pictures/IMG_0833.jpg"),
+            },
           ],
           usuario: "Diego Sánchez Martín",
           nivelUsuario: "Novato",
@@ -28,9 +34,15 @@ export const store = createStore({
           nombreRuta: "Ascensión al Pico de la Aquiana",
           infoRuta: "Campo de las Danzas 14,18kms +15ptos",
           imagenes: [
-            require("../pictures/IMG_0955.jpg"),
-            require("../pictures/IMG_0695.jpg"),
-            require("../pictures/IMG_0785.jpg"),
+            {
+              webviewPath: require("../pictures/IMG_0955.jpg"),
+            },
+            {
+              webviewPath: require("../pictures/IMG_0695.jpg"),
+            },
+            {
+              webviewPath: require("../pictures/IMG_0785.jpg"),
+            },
           ],
           usuario: "Martín Fernández Maroto",
           nivelUsuario: "Pateador de campeonato",
