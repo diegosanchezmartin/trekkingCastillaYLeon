@@ -60,14 +60,9 @@ export const store = createStore({
         id: new Date().toISOString(),
         nombreRuta: memoryData.nombreRuta,
         infoRuta: memoryData.infoRuta,
-        /*imagenes: [
-                      require("../pictures/IMG_0955.jpg"),
-                      require("../pictures/IMG_0695.jpg"),
-                      require("../pictures/IMG_0785.jpg"),
-                  ],*/
-
-        //usuario: memoryData.usuario,
-        /*nivelUsuario: "Pateador de campeonato",*/
+        imagenes: memoryData.imagenesIntroducido,
+        usuario: memoryData.usuarioIntroducido,
+        nivelUsuario: memoryData.nivelUsuarioIntroducido,
         tipoRuta: memoryData.tipoRuta,
         valoracion: memoryData.valoracion,
         //tiempoPublicacion: "hace 6 horas",
@@ -76,6 +71,8 @@ export const store = createStore({
 
         //icono:
       };
+      console.log("index");
+      console.log(nuevaRuta.imagenes);
 
       state.rutas.unshift(nuevaRuta);
     },

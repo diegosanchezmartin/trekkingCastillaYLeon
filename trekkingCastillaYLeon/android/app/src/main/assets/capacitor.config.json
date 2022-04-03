@@ -1,0 +1,6 @@
+{
+	"appId": "com.example.trekkingcyl",
+	"appName": "trekkingCastillaYLeon",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}

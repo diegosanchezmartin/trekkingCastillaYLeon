@@ -61,7 +61,10 @@ import { store } from "./store";
 
 auth.onAuthStateChanged(async (user) => {
   if (!app) {
-    const app = createApp(App).use(IonicVue).use(router).use(store);
+    app = createApp(App)
+      .use(IonicVue)
+      .use(router)
+      .use(store);
 
     router.isReady().then(() => {
       app.mount("#app");

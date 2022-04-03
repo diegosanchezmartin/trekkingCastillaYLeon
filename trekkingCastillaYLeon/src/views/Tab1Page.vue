@@ -31,15 +31,18 @@
                 </ion-label>
               </ion-item>
             </ion-card-header>
-            <ion-slides pager="true" :options="slideOpts">
-              <ion-slide v-for="(imagen, index) in ruta.imagenes" v-bind:key="index" >
-                <img :src="imagen" />
-              </ion-slide>
-            </ion-slides>
+            <swiper pager="true" :options="slideOpts">
+              <swiper-slide
+                v-for="(imagen, index) in ruta.imagenes"
+                v-bind:key="index"
+              >
+                <ion-img :src="imagen.webviewPath" />
+              </swiper-slide>
+            </swiper>
             <ion-card-content>
               <ion-item>
                 <ion-avatar slot="end">
-                  <img :src=ruta.fotoPerfilUsuario />
+                  <img :src="ruta.fotoPerfilUsuario" />
                 </ion-avatar>
                 <ion-text color="dark">
                   <h1>{{ ruta.usuario }}</h1>
@@ -53,7 +56,7 @@
                 <ion-col center text-center>
                   <button>
                     <div>
-                      <ion-icon :icon=ruta.icono></ion-icon>
+                      <ion-icon :icon="ruta.icono"></ion-icon>
                       {{ ruta.tipoRuta }}
                     </div>
                   </button>
@@ -90,8 +93,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonSlides,
-  IonSlide,
   IonButton,
   IonItem,
   IonList,
@@ -103,6 +104,9 @@ import {
   IonFooter,
   IonCol,
   IonRow,
+  IonIcon,
+  IonText,
+  
 } from "@ionic/vue";
 import {
   starOutline,
@@ -115,6 +119,10 @@ import {
 } from "ionicons/icons";
 import { useIonRouter } from "@ionic/vue";
 
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import "swiper/css";
+import "@ionic/vue/css/ionic-swiper.css";
+
 export default defineComponent({
   name: "Tab1Page",
   components: {
@@ -123,8 +131,6 @@ export default defineComponent({
     IonTitle,
     IonContent,
     IonPage,
-    IonSlides,
-    IonSlide,
     IonButton,
     IonItem,
     IonList,
@@ -136,11 +142,15 @@ export default defineComponent({
     IonFooter,
     IonCol,
     IonRow,
+    IonIcon,
+    IonText,
+    Swiper,
+    SwiperSlide,
   },
   computed: {
     rutas() {
       return this.$store.getters.rutas;
-    }
+    },
   },
   setup() {
     const ionRouter = useIonRouter();
