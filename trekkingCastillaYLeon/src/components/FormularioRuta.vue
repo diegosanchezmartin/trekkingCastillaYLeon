@@ -131,6 +131,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
+import { usernameApp } from "@/views/HacerAutenticacion.vue";
 import {
   IonItem,
   IonSelect,
@@ -183,7 +184,7 @@ export default defineComponent({
       nombreRutaIntroducido: "",
       infoRutaIntroducido: "",
       imagenesIntroducidas: "",
-      usuarioIntroducido: "desconocido",
+      usuarioIntroducido: "",
       nivelUsuarioIntroducido: "novato",
       tipoRutaIntroducido: "",
       valoracionIntroducido: "",
@@ -199,7 +200,7 @@ export default defineComponent({
         nombreRuta: this.nombreRutaIntroducido,
         infoRuta: this.infoRutaIntroducido,
         imagenesIntroducido: this.photos,
-        usuarioIntroducido: this.usuarioIntroducido,
+        usuarioIntroducido: usernameApp,
         nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
         tipoRuta: this.tipoRutaIntroducido,
         valoracion: this.valoracionIntroducido,
@@ -216,6 +217,7 @@ export default defineComponent({
     const { photos, takePhoto } = usePhotoGallery();
     const store = useStore();
     return {
+      usernameApp,
       value: computed(() => store.state.count),
       anadirDatos: () => store.dispatch("anadirRuta"),
       resizeOutline,

@@ -96,6 +96,9 @@ enum ModoDeAutenticacion {
   IniciarSesion,
   Registrarse,
 }
+
+export var usernameApp = "";
+
 export default defineComponent({
   nombre: "HacerAutenticacion",
   components: {
@@ -132,6 +135,7 @@ export default defineComponent({
           state.mensajeError = "Email y constraseña requeridos!";
           return;
         }
+        usernameApp = email.split("@")[0]; 
         await auth.signInWithEmailAndPassword(email, contrasena);
         ionRouter.push("/tabs/tab1");
       } catch (error: unknown) {
@@ -159,6 +163,7 @@ export default defineComponent({
           nombre,
           email,
         });
+        usernameApp = email.split("@")[0];
         ionRouter.push("/tabs/tab1");
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -167,6 +172,7 @@ export default defineComponent({
       }
     };
     return {
+      usernameApp,
       ...toRefs(state),
       IniciarSesionConEmailYConstaseña,
       RegistrarseConEmailYcontrasena,

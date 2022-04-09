@@ -65,13 +65,14 @@ export const store = createStore({
     rutas(state: any) {
       return state.rutas;
     },
+    rutasPerfil(state: any){
+      return function (args: any) {
+        console.log(args);
+      };
+    },
   },
   mutations: {
     anadirRuta(state: any, memoryData: any) {
-      let valoracion: string = memoryData.valoracion;
-      console.log(valoracion);
-      valoracion = valoracion.substring(1,4);
-      console.log(valoracion);
       if (memoryData.tipoRuta == "rutaLineal") {
         const nuevaRuta = {
           id: new Date().toISOString(),
@@ -81,7 +82,7 @@ export const store = createStore({
           usuario: memoryData.usuarioIntroducido,
           nivelUsuario: memoryData.nivelUsuarioIntroducido,
           tipoRuta: "Lineal",
-          valoracion: memoryData.valoracion,
+          valoracion: memoryData.valoracion.substring(0,1),
           //tiempoPublicacion: "hace 6 horas",
           kilometros: memoryData.kilometros,
           //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
@@ -101,7 +102,7 @@ export const store = createStore({
           usuario: memoryData.usuarioIntroducido,
           nivelUsuario: memoryData.nivelUsuarioIntroducido,
           tipoRuta: "Circular",
-          valoracion: memoryData.valoracion,
+          valoracion: memoryData.valoracion.substring(0,1),
           //tiempoPublicacion: "hace 6 horas",
           kilometros: memoryData.kilometros,
           //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
@@ -121,7 +122,7 @@ export const store = createStore({
           usuario: memoryData.usuarioIntroducido,
           nivelUsuario: memoryData.nivelUsuarioIntroducido,
           tipoRuta: "Ascensión",
-          valoracion: memoryData.valoracion,
+          valoracion: memoryData.valoracion.substring(0,1),
           //tiempoPublicacion: "hace 6 horas",
           kilometros: memoryData.kilometros,
           //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),

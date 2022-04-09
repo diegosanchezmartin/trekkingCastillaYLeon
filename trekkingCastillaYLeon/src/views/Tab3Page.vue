@@ -43,14 +43,27 @@
           </ion-card-header>
           <ion-card-content> </ion-card-content>
         </ion-card>
-        <ion-card> </ion-card>
+        <ion-card>
+          <ion-row>
+            <ion-col v-for="ruta in rutas" v-bind:key="ruta.id">
+              <swiper pager="true" :options="slideOpts">
+                <swiper-slide
+                  v-for="(imagen, index) in ruta.imagenes"
+                  v-bind:key="index"
+                >
+                  <ion-img :src="imagen.webviewPath" />
+                </swiper-slide>
+              </swiper>
+            </ion-col>
+          </ion-row>
+        </ion-card>
       </ion-card>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { cogOutline, pencilOutline } from "ionicons/icons"
+import { cogOutline, pencilOutline } from "ionicons/icons";
 import { defineComponent } from "vue";
 import {
   IonPage,
@@ -65,7 +78,15 @@ import {
   IonAvatar,
   IonLabel,
   IonButton,
+  IonIcon,
+  IonCol,
+  IonRow,
+  IonImg,
 } from "@ionic/vue";
+
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
+import "@ionic/vue/css/ionic-swiper.css";
 
 export default defineComponent({
   name: "Tab3Page",
@@ -82,12 +103,28 @@ export default defineComponent({
     IonAvatar,
     IonLabel,
     IonButton,
+    IonIcon,
+    IonCol,
+    IonRow,
+    Swiper,
+    SwiperSlide,
+    IonImg,
+  },
+  computed: {
+    rutas() {
+      return this.$store.getters.rutasPerfil;
+    },
   },
   setup() {
+    const slideOpts = {
+      initialSlide: 0,
+      speed: 400,
+    };
     return {
+      slideOpts,
       cogOutline,
       pencilOutline,
-    }
-  }
+    };
+  },
 });
 </script>
