@@ -36,7 +36,7 @@
           <ion-grid>
             <ion-row>
               <ion-col size="6" :key="photo" v-for="photo in photos">
-                <ion-img :src="photo.webviewPath"></ion-img>
+                <ion-img :ng-src="photo.webviewPath"></ion-img>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -142,6 +142,11 @@ import {
   IonIcon,
   IonFab,
   IonFabButton,
+  IonImg,
+  IonCol,
+  IonRow,
+  IonGrid,
+  IonPage,
 } from "@ionic/vue";
 
 import {
@@ -167,6 +172,11 @@ export default defineComponent({
     IonIcon,
     IonFab,
     IonFabButton,
+    IonImg,
+    IonCol,
+    IonRow,
+    IonGrid,
+    IonPage,
   },
   data() {
     return {

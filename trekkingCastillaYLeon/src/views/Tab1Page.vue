@@ -27,7 +27,7 @@
               <ion-item>
                 <ion-label>
                   <h4>{{ ruta.nombreRuta }}</h4>
-                  <h3>{{ ruta.infoRuta }} {{ ruta.kilometros }}</h3>
+                  <h3>{{ ruta.infoRuta }} {{ ruta.kilometros }} Kms</h3>
                 </ion-label>
               </ion-item>
             </ion-card-header>
@@ -106,6 +106,7 @@ import {
   IonRow,
   IonIcon,
   IonText,
+  IonImg,
   
 } from "@ionic/vue";
 import {
@@ -146,6 +147,7 @@ export default defineComponent({
     IonText,
     Swiper,
     SwiperSlide,
+    IonImg,
   },
   computed: {
     rutas() {

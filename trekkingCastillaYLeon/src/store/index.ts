@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { resizeOutline, repeatOutline } from "ionicons/icons";
+import { resizeOutline, repeatOutline, flagOutline } from "ionicons/icons";
 
 export const store = createStore({
   state() {
@@ -68,25 +68,71 @@ export const store = createStore({
   },
   mutations: {
     anadirRuta(state: any, memoryData: any) {
-      const nuevaRuta = {
-        id: new Date().toISOString(),
-        nombreRuta: memoryData.nombreRuta,
-        infoRuta: memoryData.infoRuta,
-        imagenes: memoryData.imagenesIntroducido,
-        usuario: memoryData.usuarioIntroducido,
-        nivelUsuario: memoryData.nivelUsuarioIntroducido,
-        tipoRuta: memoryData.tipoRuta,
-        valoracion: memoryData.valoracion,
-        //tiempoPublicacion: "hace 6 horas",
-        kilometros: memoryData.kilometros,
-        //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
+      let valoracion: string = memoryData.valoracion;
+      console.log(valoracion);
+      valoracion = valoracion.substring(1,4);
+      console.log(valoracion);
+      if (memoryData.tipoRuta == "rutaLineal") {
+        const nuevaRuta = {
+          id: new Date().toISOString(),
+          nombreRuta: memoryData.nombreRuta,
+          infoRuta: memoryData.infoRuta,
+          imagenes: memoryData.imagenesIntroducido,
+          usuario: memoryData.usuarioIntroducido,
+          nivelUsuario: memoryData.nivelUsuarioIntroducido,
+          tipoRuta: "Lineal",
+          valoracion: memoryData.valoracion,
+          //tiempoPublicacion: "hace 6 horas",
+          kilometros: memoryData.kilometros,
+          //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
+          icono: resizeOutline,
+        };
 
-        //icono:
-      };
-      console.log("index");
-      console.log(nuevaRuta.imagenes);
+        console.log("index");
+        console.log(nuevaRuta.imagenes);
 
-      state.rutas.unshift(nuevaRuta);
+        state.rutas.unshift(nuevaRuta);
+      } else if (memoryData.tipoRuta == "rutaCircular") {
+        const nuevaRuta = {
+          id: new Date().toISOString(),
+          nombreRuta: memoryData.nombreRuta,
+          infoRuta: memoryData.infoRuta,
+          imagenes: memoryData.imagenesIntroducido,
+          usuario: memoryData.usuarioIntroducido,
+          nivelUsuario: memoryData.nivelUsuarioIntroducido,
+          tipoRuta: "Circular",
+          valoracion: memoryData.valoracion,
+          //tiempoPublicacion: "hace 6 horas",
+          kilometros: memoryData.kilometros,
+          //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
+          icono: repeatOutline,
+        };
+
+        console.log("index");
+        console.log(nuevaRuta.imagenes);
+
+        state.rutas.unshift(nuevaRuta);
+      } else if (memoryData.tipoRuta == "ascension") {
+        const nuevaRuta = {
+          id: new Date().toISOString(),
+          nombreRuta: memoryData.nombreRuta,
+          infoRuta: memoryData.infoRuta,
+          imagenes: memoryData.imagenesIntroducido,
+          usuario: memoryData.usuarioIntroducido,
+          nivelUsuario: memoryData.nivelUsuarioIntroducido,
+          tipoRuta: "Ascensión",
+          valoracion: memoryData.valoracion,
+          //tiempoPublicacion: "hace 6 horas",
+          kilometros: memoryData.kilometros,
+          //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
+          icono: flagOutline,
+        };
+
+        console.log("index");
+        console.log(nuevaRuta.imagenes);
+
+        state.rutas.unshift(nuevaRuta);
+      }
     },
   },
 });
