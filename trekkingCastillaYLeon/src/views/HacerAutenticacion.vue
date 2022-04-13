@@ -28,8 +28,15 @@
               <ion-input v-model="email"></ion-input>
             </ion-item>
             <ion-item>
-              <ion-label position="floating">contrasena</ion-label>
+              <ion-label position="floating">Contraseña</ion-label>
               <ion-input v-model="contrasena" type="password"></ion-input>
+            </ion-item>
+            <ion-item @click="setShowActionSheet" v-if="modo === ModoDeAutenticacion.Registrarse">
+              <ion-label position="floating">Foto de perfil</ion-label>
+              <ion-action-sheet
+                @onDidDismiss="setShowActionSheet">
+                iconos perfil
+              </ion-action-sheet>
             </ion-item>
             <ion-button
               expand="block"
@@ -86,11 +93,14 @@ import {
   IonButton,
   IonLabel,
   IonItem,
+  actionSheetController,
+  IonActionSheet,
 } from "@ionic/vue";
 import { auth, db } from "../main";
 import { reactive, toRefs } from "vue";
 import { useIonRouter } from "@ionic/vue";
 import { defineComponent } from "vue";
+import { leafOutline, schoolOutline, medalOutline, flameOutline} from "ionicons/icons";
 
 enum ModoDeAutenticacion {
   IniciarSesion,
@@ -116,13 +126,65 @@ export default defineComponent({
     IonLabel,
     IonItem,
     IonCardHeader,
+    IonActionSheet
   },
+  methods: {
+    async setShowActionSheet() {
+      const actionSheet = await actionSheetController
+      .create({
+        header: 'Iconos perfil',
+        buttons: [
+          {
+            text: 'No has pisado una montaña?',
+            icon: leafOutline,
+            id: 'noob-button',
+            data: 'noob',
+            handler: () => {
+              console.log('Hoja seleccionada');
+            },
+          },
+          {
+            text: 'Has hecho rutas alguna vez...',
+            icon: schoolOutline,
+            id: 'normal-button',
+            data: 'normal',
+            handler: () => {
+              console.log('Birrete seleccionado');
+            },
+          },
+          {
+            text: 'Te pasas todo el día en la montaña',
+            icon: medalOutline,
+            id: 'expert-button',
+            data: 'expert',
+            handler: () => {
+              console.log('Medalla seleccionada');
+            },
+          },
+          {
+            text: 'Conoces más el entorno que tu propia casa',
+            icon: flameOutline,
+            id: 'pro-button',
+            data: 'pro',
+            handler: () => {
+              console.log('Llama seleccionada');
+            },
+          },
+        ]
+      });
+      await actionSheet.present();
+
+      const { data } = await actionSheet.onDidDismiss();
+      console.log('Cuadro resuelto con datos: ', data);
+    }
+  }, 
   setup() {
     const ionRouter = useIonRouter();
     const state = reactive({
       nombre: "",
       email: "",
       contrasena: "",
+      fotoPerfil: "",
       modo: ModoDeAutenticacion.IniciarSesion,
       mensajeError: "",
     });
@@ -135,7 +197,8 @@ export default defineComponent({
           state.mensajeError = "Email y constraseña requeridos!";
           return;
         }
-        usernameApp = email.split("@")[0]; 
+        usernameApp = email.split("@")[0];
+        console.log(usernameApp = email.split("@")[0]); 
         await auth.signInWithEmailAndPassword(email, contrasena);
         ionRouter.push("/tabs/tab1");
       } catch (error: unknown) {

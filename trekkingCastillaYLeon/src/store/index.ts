@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { resizeOutline, repeatOutline, flagOutline } from "ionicons/icons";
+import { db } from "../main";
 
 export const store = createStore({
   state() {
@@ -65,7 +66,7 @@ export const store = createStore({
     rutas(state: any) {
       return state.rutas;
     },
-    rutasPerfil(state: any){
+    rutasPerfil(state: any) {
       return function (args: any) {
         console.log(args);
       };
@@ -82,7 +83,7 @@ export const store = createStore({
           usuario: memoryData.usuarioIntroducido,
           nivelUsuario: memoryData.nivelUsuarioIntroducido,
           tipoRuta: "Lineal",
-          valoracion: memoryData.valoracion.substring(0,1),
+          valoracion: memoryData.valoracion.substring(0, 1),
           //tiempoPublicacion: "hace 6 horas",
           kilometros: memoryData.kilometros,
           //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
@@ -90,7 +91,7 @@ export const store = createStore({
         };
 
         console.log("index");
-        console.log(nuevaRuta.imagenes);
+        console.log(nuevaRuta);
 
         state.rutas.unshift(nuevaRuta);
       } else if (memoryData.tipoRuta == "rutaCircular") {
@@ -102,7 +103,7 @@ export const store = createStore({
           usuario: memoryData.usuarioIntroducido,
           nivelUsuario: memoryData.nivelUsuarioIntroducido,
           tipoRuta: "Circular",
-          valoracion: memoryData.valoracion.substring(0,1),
+          valoracion: memoryData.valoracion.substring(0, 1),
           //tiempoPublicacion: "hace 6 horas",
           kilometros: memoryData.kilometros,
           //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
@@ -110,7 +111,7 @@ export const store = createStore({
         };
 
         console.log("index");
-        console.log(nuevaRuta.imagenes);
+        console.log(nuevaRuta);
 
         state.rutas.unshift(nuevaRuta);
       } else if (memoryData.tipoRuta == "ascension") {
@@ -122,7 +123,7 @@ export const store = createStore({
           usuario: memoryData.usuarioIntroducido,
           nivelUsuario: memoryData.nivelUsuarioIntroducido,
           tipoRuta: "Ascensión",
-          valoracion: memoryData.valoracion.substring(0,1),
+          valoracion: memoryData.valoracion.substring(0, 1),
           //tiempoPublicacion: "hace 6 horas",
           kilometros: memoryData.kilometros,
           //fotoPerfilUsuario: require("../pictures/FotoPerfil2.jpg"),
@@ -130,9 +131,10 @@ export const store = createStore({
         };
 
         console.log("index");
-        console.log(nuevaRuta.imagenes);
-
+        console.log(nuevaRuta);
         state.rutas.unshift(nuevaRuta);
+      } else {
+        console.log("banana");
       }
     },
   },

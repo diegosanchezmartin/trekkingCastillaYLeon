@@ -17,7 +17,7 @@ export function usePhotoGallery() {
 
   const loadSaved = async () => {
     const photoList = await Storage.get({ key: PHOTO_STORAGE });
-    const photosInStorage = photoList.value ? JSON.parse(photoList.value) : [];
+    const photosInStorage = [];
 
     if (!isPlatform("hybrid")) {
       for (const photo of photosInStorage) {
@@ -25,7 +25,7 @@ export function usePhotoGallery() {
           path: photo.filepath,
           directory: Directory.Data,
         });
-        photo.webviewPath = "data:image/jpeg;base64,${file.data}";
+        photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
       }
     }
 

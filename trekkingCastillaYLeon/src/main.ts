@@ -2,9 +2,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 import { initializeAuth, browserSessionPersistence } from "firebase/auth";
 
 //import { isPlatform } from '@ionic/vue';
@@ -51,7 +51,6 @@ initializeAuth(appFirebase, {
 });
 export const auth = firebase.auth();
 export const db = firebase.firestore();
-export const storage = firebase.storage().ref();
 let app: any;
 
 import { defineCustomElements } from "@ionic/pwa-elements/loader";

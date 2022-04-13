@@ -19,9 +19,8 @@
           </ion-button>
         </ion-item>
       </ion-header>
-
       <ion-list>
-        <ion-item v-for="ruta in rutas" v-bind:key="ruta.id">
+        <ion-item v-for="ruta in this.rutas" v-bind:key="ruta.id">
           <ion-card>
             <ion-card-header>
               <ion-item>
@@ -87,6 +86,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { db } from "@/main";
+import { collection, getDocs } from "@firebase/firestore";
 import {
   IonPage,
   IonHeader,
@@ -107,7 +108,6 @@ import {
   IonIcon,
   IonText,
   IonImg,
-  
 } from "@ionic/vue";
 import {
   starOutline,
@@ -120,7 +120,7 @@ import {
 } from "ionicons/icons";
 import { useIonRouter } from "@ionic/vue";
 
-import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "@ionic/vue/css/ionic-swiper.css";
 
@@ -149,9 +149,28 @@ export default defineComponent({
     SwiperSlide,
     IonImg,
   },
-  computed: {
-    rutas() {
-      return this.$store.getters.rutas;
+  methods: {
+    async obtenerRutasDisponibles() {
+      const querySnapshot = await getDocs(collection(db, "rutas"));
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        this.rutas.push({
+          id: doc.id,
+          nombreRuta: doc.data().nombreRuta,
+          infoRuta: doc.data().infoRuta,
+          imagenesIntroducido: doc.data().imagenesIntroducidas,
+          usuarioIntroducido: doc.data().usuarioIntroducido,
+          nivelUsuarioIntroducido: doc.data().nivelUsuarioIntroducido,
+          tipoRuta: doc.data().tipoRuta,
+          valoracion: doc.data().valoracion,
+          tiempoPublicacionIntroducido: doc.data().tiempoPublicacionIntroducido,
+          kilometros: doc.data().kilometros,
+          fotoPerfilUsuarioIntroducida: doc.data().fotoPerfilUsuarioIntroducida,
+          iconoIntroducido: doc.data().iconoIntroducido,
+        });
+        console.log(doc.id, " => ", doc.data());
+      });
+      console.log(this.rutas);
     },
   },
   setup() {
@@ -160,6 +179,7 @@ export default defineComponent({
       initialSlide: 0,
       speed: 400,
     };
+    let rutas = [];
     const goAddRoute = async () => {
       ionRouter.push("/tabs/anadirRutaNueva");
     };
@@ -173,7 +193,11 @@ export default defineComponent({
       searchOutline,
       slideOpts,
       goAddRoute,
+      rutas,
     };
+  },
+  mounted() {
+    this.obtenerRutasDisponibles();
   },
 });
 </script>
