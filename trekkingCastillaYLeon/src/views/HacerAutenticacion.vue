@@ -31,11 +31,15 @@
               <ion-label position="floating">Contraseña</ion-label>
               <ion-input v-model="contrasena" type="password"></ion-input>
             </ion-item>
-            <ion-item @click="setShowActionSheet" v-if="modo === ModoDeAutenticacion.Registrarse">
-              <ion-label position="floating">Foto de perfil</ion-label>
+            <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
+              <ion-button @click="setOpen(true)" >
+                Foto de perfil
+              </ion-button>
               <ion-action-sheet
-                @onDidDismiss="setShowActionSheet">
-                iconos perfil
+                :is-open="isOpenRef"
+                header = "Elige tu oto de perfil"
+                :buttons="buttons"
+                @didDismiss="setOpen(false)">
               </ion-action-sheet>
             </ion-item>
             <ion-button
@@ -99,8 +103,9 @@ import {
 import { auth, db } from "../main";
 import { reactive, toRefs } from "vue";
 import { useIonRouter } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { leafOutline, schoolOutline, medalOutline, flameOutline} from "ionicons/icons";
+import { data } from "dom7";
 
 enum ModoDeAutenticacion {
   IniciarSesion,
@@ -128,14 +133,25 @@ export default defineComponent({
     IonCardHeader,
     IonActionSheet
   },
-  methods: {
+  /*methods: {
     async setShowActionSheet() {
       const actionSheet = await actionSheetController
       .create({
         header: 'Iconos perfil',
-        buttons: [
+        buttons : [],
+      });
+      await actionSheet.present();
+
+      const { data } = await actionSheet.onDidDismiss();
+      console.log('Cuadro resuelto con datos: ', data);
+    }
+  },*/ 
+  setup() {
+    const isOpenRef = ref(false);
+    const setOpen = (state: boolean) => isOpenRef.value = state;
+    const buttons = [
           {
-            text: 'No has pisado una montaña?',
+            text: 'No has hecho nunca una ruta?',
             icon: leafOutline,
             id: 'noob-button',
             data: 'noob',
@@ -144,7 +160,7 @@ export default defineComponent({
             },
           },
           {
-            text: 'Has hecho rutas alguna vez...',
+            text: 'Has salido de marcha alguna vez...',
             icon: schoolOutline,
             id: 'normal-button',
             data: 'normal',
@@ -153,7 +169,7 @@ export default defineComponent({
             },
           },
           {
-            text: 'Te pasas todo el día en la montaña',
+            text: 'Vas a la montaña todos los fines de semana',
             icon: medalOutline,
             id: 'expert-button',
             data: 'expert',
@@ -162,7 +178,7 @@ export default defineComponent({
             },
           },
           {
-            text: 'Conoces más el entorno que tu propia casa',
+            text: 'Vives para rutear y ruteas para vivir',
             icon: flameOutline,
             id: 'pro-button',
             data: 'pro',
@@ -170,15 +186,7 @@ export default defineComponent({
               console.log('Llama seleccionada');
             },
           },
-        ]
-      });
-      await actionSheet.present();
-
-      const { data } = await actionSheet.onDidDismiss();
-      console.log('Cuadro resuelto con datos: ', data);
-    }
-  }, 
-  setup() {
+        ];
     const ionRouter = useIonRouter();
     const state = reactive({
       nombre: "",
@@ -235,6 +243,9 @@ export default defineComponent({
       }
     };
     return {
+      buttons,
+      isOpenRef,
+      setOpen,
       usernameApp,
       ...toRefs(state),
       IniciarSesionConEmailYConstaseña,

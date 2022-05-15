@@ -51,6 +51,8 @@ initializeAuth(appFirebase, {
 });
 export const auth = firebase.auth();
 export const db = firebase.firestore();
+export const storage = firebase.storage();
+
 let app: any;
 
 import { defineCustomElements } from "@ionic/pwa-elements/loader";

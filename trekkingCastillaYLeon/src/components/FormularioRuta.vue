@@ -170,7 +170,15 @@ import {
 } from "ionicons/icons";
 import { useStore } from "vuex";
 import { usePhotoGallery, UserPhoto } from "../camera/usePhotoGallery";
-import { db } from "../main";
+import { storage, auth, db } from "../main";
+
+function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 export default defineComponent({
   name: "AnadirRuta",
@@ -215,7 +223,10 @@ export default defineComponent({
         nombreRuta: this.nombreRutaIntroducido,
         infoRuta: this.infoRutaIntroducido,
         imagenesIntroducido: this.photos,
-        usuarioIntroducido: usernameApp,
+        //usuarioIntroducido: usernameApp,
+        //guid: uuidv4(),
+        //filepath: '${user?.uid}/images/${guid}.${image.format}',
+        usuarioIntroducido: auth.currentUser,
         nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
         tipoRuta: this.tipoRutaIntroducido,
         valoracion: this.valoracionIntroducido,
@@ -230,7 +241,7 @@ export default defineComponent({
       .set({
         nombreRuta: this.nombreRutaIntroducido,
         infoRuta: this.infoRutaIntroducido,
-        imagenesIntroducido: this.photos,
+        imagenesIntroducidas: this.photos,
         usuarioIntroducido: usernameApp,
         nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
         tipoRuta: this.tipoRutaIntroducido,
