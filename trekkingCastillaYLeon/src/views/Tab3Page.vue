@@ -18,7 +18,7 @@
               <ion-avatar slot="start">
                 <img src="../pictures/FotoPerfil1.jpg" />
               </ion-avatar>
-              <ion-label color="dark">@diegosanchezmartin</ion-label>
+              <ion-label>{{currentUser.displayName}}</ion-label>
             </ion-item>
             <ion-item>
               <ion-label color="primary">Rutas realizadas: </ion-label>
@@ -85,6 +85,7 @@ import {
 } from "@ionic/vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { auth } from "@/main";
 import "swiper/css";
 import "@ionic/vue/css/ionic-swiper.css";
 
@@ -114,6 +115,12 @@ export default defineComponent({
     rutas() {
       return this.$store.getters.rutasPerfil;
     },
+  },
+  data() {
+    const currentUser = auth.currentUser;
+    return {
+      currentUser,
+    }
   },
   setup() {
     const slideOpts = {

@@ -32,10 +32,10 @@
             </ion-card-header>
             <swiper pager="true" :options="slideOpts">
               <swiper-slide
-                v-for="(imagen, index) in ruta.imagenes"
-                v-bind:key="index"
+                v-for="(photo, index) in ruta.imagenesIntroducidas"
+                :key="index"
               >
-                <ion-img :src="imagen.webviewPath" />
+                <ion-img :src="photo" />
               </swiper-slide>
             </swiper>
             <ion-card-content>
@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, reactive, toRefs } from "vue";
 import { db } from "@/main";
 import { collection, getDocs } from "@firebase/firestore";
 import {
@@ -156,6 +156,9 @@ export default defineComponent({
     }
   },
   setup() {
+    const state = reactive({
+      photos: [] as string[],
+    })
     const ionRouter = useIonRouter();
     const slideOpts = {
       initialSlide: 0,
@@ -164,21 +167,7 @@ export default defineComponent({
     const goAddRoute = async () => {
       ionRouter.push("/tabs/anadirRutaNueva");
     };
-    return {
-      timeOutline,
-      starOutline,
-      resizeOutline,
-      repeatOutline,
-      flagOutline,
-      analyticsOutline,
-      addCircleOutline,
-      searchOutline,
-      slideOpts,
-      goAddRoute,
-    };
-  },
-  methods: {
-    async obtenerRutasDisponibles() {
+    async function obtenerRutasDisponibles() {
       const querySnapshot = await getDocs(collection(db, "rutas"));
       querySnapshot.forEach((doc) => {
         if(doc.data().tipoRuta == "rutaCircular") {
@@ -210,7 +199,7 @@ export default defineComponent({
           kilometros: doc.data().kilometros,
           fotoPerfilUsuarioIntroducida: doc.data().fotoPerfilUsuarioIntroducida,
           iconoIntroducido: resizeOutline,
-        });
+         });
         } if(doc.data().tipoRuta == "ascension") {
           this.rutas.push({
           id: doc.id,
@@ -225,13 +214,26 @@ export default defineComponent({
           kilometros: doc.data().kilometros,
           fotoPerfilUsuarioIntroducida: doc.data().fotoPerfilUsuarioIntroducida,
           iconoIntroducido: flagOutline,
-        });
+         });
         }  
-        
         console.log(doc.id, " => ", doc.data());
       });
       console.log(this.rutas);
-    },
+    }
+    return {
+      obtenerRutasDisponibles,
+      ...toRefs(state),
+      timeOutline,
+      starOutline,
+      resizeOutline,
+      repeatOutline,
+      flagOutline,
+      analyticsOutline,
+      addCircleOutline,
+      searchOutline,
+      slideOpts,
+      goAddRoute,
+    };
   },
   mounted() {
     this.obtenerRutasDisponibles();

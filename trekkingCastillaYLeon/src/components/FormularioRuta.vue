@@ -1,7 +1,6 @@
 <template>
   <ion-page>
-    <ion-header>
-    </ion-header>
+    <ion-header> </ion-header>
     <ion-content :fullscreen="true">
       <form class="ios-padding" @submit.prevent="guardarRuta">
         <ion-list>
@@ -10,6 +9,7 @@
               >Nombre de la ruta que vas a añadir</ion-label
             >
             <ion-input
+              ref="nombreRuta"
               clear-input
               value=""
               type="text"
@@ -17,7 +17,7 @@
               v-model="nombreRutaIntroducido"
             ></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-item> 
             <ion-label position="floating"
               >¿Dónde has realizado la ruta?</ion-label
             >
@@ -32,7 +32,7 @@
           <ion-item>
             <ion-label>Añade fotos de la ruta</ion-label>
             <ion-fab horizontal="end">
-              <ion-fab-button size="small" color="dark" @click="takePhoto()">
+              <ion-fab-button size="small" color="dark" @click="takePicture">
                 <ion-icon :icon="addOutline" />
               </ion-fab-button>
             </ion-fab>
@@ -140,7 +140,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera'
+import { defineComponent, computed, ref } from "vue";
 import { usernameApp } from "@/views/HacerAutenticacion.vue";
 import {
   IonContent,
@@ -217,15 +218,32 @@ export default defineComponent({
       iconoIntroducido: "",
     };
   },
-  methods: {
-    guardarRuta() {
+  setup() {
+    var urlsFotos = [];
+    var url = '';
+    const user = auth.currentUser;
+    const takePicture = async () => {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Base64
+      });
+      if(image?.base64String) {
+        const guid = uuidv4();
+        const filepath = `${user?.uid}/images/${guid}.${image.format}`;
+        const storageRef = storage.ref();
+        await storageRef.child(filepath).putString(image.base64String, 'base64');
+        url = await storageRef.child(filepath).getDownloadURL();
+        console.log(url);
+        urlsFotos.push(url);
+      }
+    }
+    async function guardarRuta() {
       const memoryData = {
         nombreRuta: this.nombreRutaIntroducido,
         infoRuta: this.infoRutaIntroducido,
-        imagenesIntroducido: this.photos,
-        //usuarioIntroducido: usernameApp,
-        //guid: uuidv4(),
-        //filepath: '${user?.uid}/images/${guid}.${image.format}',
+        //imagenesIntroducido: this.photos,
+        imagenesIntroducido: urlsFotos,
         usuarioIntroducido: auth.currentUser,
         nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
         tipoRuta: this.tipoRutaIntroducido,
@@ -236,13 +254,12 @@ export default defineComponent({
         iconoIntroducido: this.iconoIntroducido,
       };
 
-      db.collection("rutas")
-      .doc(this.nombreRutaIntroducido)
-      .set({
+      db.collection("rutas").doc(this.nombreRutaIntroducido).set({
         nombreRuta: this.nombreRutaIntroducido,
         infoRuta: this.infoRutaIntroducido,
-        imagenesIntroducidas: this.photos,
-        usuarioIntroducido: usernameApp,
+        //imagenesIntroducidas: this.photos,
+        imagenesIntroducidas: urlsFotos,
+        usuarioIntroducido: auth.currentUser,
         nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
         tipoRuta: this.tipoRutaIntroducido,
         valoracion: this.valoracionIntroducido,
@@ -252,10 +269,19 @@ export default defineComponent({
         iconoIntroducido: this.iconoIntroducido,
       });
 
+      /*urlsFotos.forEach(async urlFoto => {
+        await db
+          .collection("users")
+          .doc(user?.uid)
+          .collection("images")
+          .add({
+            image: urlFoto,
+          })
+      });*/ 
+
       this.$emit("anadir-ruta", memoryData);
-    },
-  },
-  setup() {
+    }
+
     const { photos, takePhoto } = usePhotoGallery();
     const store = useStore();
     return {
@@ -268,6 +294,8 @@ export default defineComponent({
       flagOutline,
       takePhoto,
       photos,
+      takePicture,
+      guardarRuta,
     };
   },
 });
