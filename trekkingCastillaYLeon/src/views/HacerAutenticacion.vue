@@ -234,6 +234,10 @@ export default defineComponent({
           nombre,
           email,
         });
+        const user = auth.currentUser;
+        user.updateProfile({
+          displayName: nombre
+        });
         usernameApp = email.split("@")[0];
         ionRouter.push("/tabs/tab1");
       } catch (error: unknown) {

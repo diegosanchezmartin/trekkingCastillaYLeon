@@ -71,7 +71,7 @@
                   <button>
                     <div>
                       <ion-icon :icon="timeOutline" />
-                      {{ ruta.tiempoPublicacion }}
+                      {{ ruta.fechaPublicacion }}
                     </div>
                   </button>
                 </ion-col>
@@ -150,15 +150,10 @@ export default defineComponent({
     SwiperSlide,
     IonImg,
   },
-  data(){
-    return {
-      rutas: []
-    }
-  },
   setup() {
     const state = reactive({
-      photos: [] as string[],
-    })
+      rutas: [],
+    });
     const ionRouter = useIonRouter();
     const slideOpts = {
       initialSlide: 0,
@@ -170,56 +165,61 @@ export default defineComponent({
     async function obtenerRutasDisponibles() {
       const querySnapshot = await getDocs(collection(db, "rutas"));
       querySnapshot.forEach((doc) => {
-        if(doc.data().tipoRuta == "rutaCircular") {
-          this.rutas.push({
-          id: doc.id,
-          nombreRuta: doc.data().nombreRuta,
-          infoRuta: doc.data().infoRuta,
-          imagenesIntroducidas: doc.data().imagenesIntroducidas,
-          usuario: doc.data().usuarioIntroducido,
-          nivelUsuario: doc.data().nivelUsuarioIntroducido,
-          tipoRuta: "Circular",
-          valoracion: doc.data().valoracion,
-          tiempoPublicacionIntroducido: doc.data().tiempoPublicacionIntroducido,
-          kilometros: doc.data().kilometros,
-          fotoPerfilUsuarioIntroducida: doc.data().fotoPerfilUsuarioIntroducida,
-          iconoIntroducido: repeatOutline,
-        });
-        } else if(doc.data().tipoRuta == "rutaLineal") {
-          this.rutas.push({
-          id: doc.id,
-          nombreRuta: doc.data().nombreRuta,
-          infoRuta: doc.data().infoRuta,
-          imagenesIntroducidas: doc.data().imagenesIntroducidas,
-          usuario: doc.data().usuarioIntroducido,
-          nivelUsuario: doc.data().nivelUsuarioIntroducido,
-          tipoRuta: "Lineal",
-          valoracion: doc.data().valoracion,
-          tiempoPublicacionIntroducido: doc.data().tiempoPublicacionIntroducido,
-          kilometros: doc.data().kilometros,
-          fotoPerfilUsuarioIntroducida: doc.data().fotoPerfilUsuarioIntroducida,
-          iconoIntroducido: resizeOutline,
-         });
-        } if(doc.data().tipoRuta == "ascension") {
-          this.rutas.push({
-          id: doc.id,
-          nombreRuta: doc.data().nombreRuta,
-          infoRuta: doc.data().infoRuta,
-          imagenesIntroducidas: doc.data().imagenesIntroducidas,
-          usuario: doc.data().usuarioIntroducido,
-          nivelUsuario: doc.data().nivelUsuarioIntroducido,
-          tipoRuta: "Ascension",
-          valoracion: doc.data().valoracion,
-          tiempoPublicacionIntroducido: doc.data().tiempoPublicacionIntroducido,
-          kilometros: doc.data().kilometros,
-          fotoPerfilUsuarioIntroducida: doc.data().fotoPerfilUsuarioIntroducida,
-          iconoIntroducido: flagOutline,
-         });
-        }  
+        if (doc.data().tipoRuta == "rutaCircular") {
+          state.rutas.push({
+            id: doc.id,
+            nombreRuta: doc.data().nombreRuta,
+            infoRuta: doc.data().infoRuta,
+            imagenesIntroducidas: doc.data().imagenesIntroducidas,
+            usuario: doc.data().usuarioIntroducido,
+            nivelUsuario: doc.data().nivelUsuarioIntroducido,
+            tipoRuta: "Circular",
+            valoracion: doc.data().valoracion,
+            kilometros: doc.data().kilometros,
+            fotoPerfilUsuarioIntroducida:
+              doc.data().fotoPerfilUsuarioIntroducida,
+            iconoIntroducido: repeatOutline,
+            fechaPublicacion: doc.data().fechaPublicacion,
+          });
+        } else if (doc.data().tipoRuta == "rutaLineal") {
+          state.rutas.push({
+            id: doc.id,
+            nombreRuta: doc.data().nombreRuta,
+            infoRuta: doc.data().infoRuta,
+            imagenesIntroducidas: doc.data().imagenesIntroducidas,
+            usuario: doc.data().usuarioIntroducido,
+            nivelUsuario: doc.data().nivelUsuarioIntroducido,
+            tipoRuta: "Lineal",
+            valoracion: doc.data().valoracion,
+            kilometros: doc.data().kilometros,
+            fotoPerfilUsuarioIntroducida:
+              doc.data().fotoPerfilUsuarioIntroducida,
+            iconoIntroducido: resizeOutline,
+            fechaPublicacion: doc.data().fechaPublicacion,
+          });
+        }
+        if (doc.data().tipoRuta == "ascension") {
+          state.rutas.push({
+            id: doc.id,
+            nombreRuta: doc.data().nombreRuta,
+            infoRuta: doc.data().infoRuta,
+            imagenesIntroducidas: doc.data().imagenesIntroducidas,
+            usuario: doc.data().usuarioIntroducido,
+            nivelUsuario: doc.data().nivelUsuarioIntroducido,
+            tipoRuta: "Ascension",
+            valoracion: doc.data().valoracion,
+            kilometros: doc.data().kilometros,
+            fotoPerfilUsuarioIntroducida:
+              doc.data().fotoPerfilUsuarioIntroducida,
+            iconoIntroducido: flagOutline,
+            fechaPublicacion: doc.data().fechaPublicacion,
+          });
+        }
         console.log(doc.id, " => ", doc.data());
       });
-      console.log(this.rutas);
+      console.log(state.rutas);
     }
+
     return {
       obtenerRutasDisponibles,
       ...toRefs(state),
@@ -235,8 +235,16 @@ export default defineComponent({
       goAddRoute,
     };
   },
+  watch: {
+    $route(to, from) {
+      this.rutas = [];
+      this.obtenerRutasDisponibles();
+      console.log("aqui");
+    },
+  },
   mounted() {
     this.obtenerRutasDisponibles();
+    console.log("Aqui");
   },
 });
 </script>

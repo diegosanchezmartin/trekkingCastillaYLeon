@@ -38,8 +38,8 @@
             </ion-fab>
             <ion-grid>
               <ion-row>
-                <ion-col size="6" :key="photo" v-for="photo in photos">
-                  <ion-img :src="photo.webviewPath"></ion-img>
+                <ion-col size="6" :key="photo" v-for="photo in urlsFotos">
+                  <ion-img :src="photo"></ion-img>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -212,13 +212,13 @@ export default defineComponent({
       nivelUsuarioIntroducido: "novato",
       tipoRutaIntroducido: "",
       valoracionIntroducido: "",
-      tiempoPublicacionIntroducido: "",
       kilometrosIntroducidos: "",
       fotoPerfilUsuarioIntroducida: "",
       iconoIntroducido: "",
     };
   },
   setup() {
+    var images = [];
     var urlsFotos = [];
     var url = '';
     const user = auth.currentUser;
@@ -234,40 +234,30 @@ export default defineComponent({
         const storageRef = storage.ref();
         await storageRef.child(filepath).putString(image.base64String, 'base64');
         url = await storageRef.child(filepath).getDownloadURL();
+        console.log(image);
+        images.push(image);
         console.log(url);
         urlsFotos.push(url);
       }
     }
     async function guardarRuta() {
-      const memoryData = {
-        nombreRuta: this.nombreRutaIntroducido,
-        infoRuta: this.infoRutaIntroducido,
-        //imagenesIntroducido: this.photos,
-        imagenesIntroducido: urlsFotos,
-        usuarioIntroducido: auth.currentUser,
-        nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
-        tipoRuta: this.tipoRutaIntroducido,
-        valoracion: this.valoracionIntroducido,
-        tiempoPublicacionIntroducido: this.tiempoPublicacionIntroducido,
-        kilometros: this.kilometrosIntroducidos,
-        fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
-        iconoIntroducido: this.iconoIntroducido,
-      };
-
+      const current = new Date();
       db.collection("rutas").doc(this.nombreRutaIntroducido).set({
         nombreRuta: this.nombreRutaIntroducido,
         infoRuta: this.infoRutaIntroducido,
         //imagenesIntroducidas: this.photos,
         imagenesIntroducidas: urlsFotos,
-        usuarioIntroducido: auth.currentUser,
+        usuarioIntroducido: auth.currentUser.displayName,
         nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
         tipoRuta: this.tipoRutaIntroducido,
         valoracion: this.valoracionIntroducido,
-        tiempoPublicacionIntroducido: this.tiempoPublicacionIntroducido,
         kilometros: this.kilometrosIntroducidos,
         fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
         iconoIntroducido: this.iconoIntroducido,
-      });
+        fechaPublicacion: `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`,
+      }).then(
+         this.$emit("anadir-ruta")
+      );
 
       /*urlsFotos.forEach(async urlFoto => {
         await db
@@ -278,13 +268,12 @@ export default defineComponent({
             image: urlFoto,
           })
       });*/ 
-
-      this.$emit("anadir-ruta", memoryData);
     }
 
     const { photos, takePhoto } = usePhotoGallery();
     const store = useStore();
     return {
+      urlsFotos,
       usernameApp,
       value: computed(() => store.state.count),
       anadirDatos: () => store.dispatch("anadirRuta"),

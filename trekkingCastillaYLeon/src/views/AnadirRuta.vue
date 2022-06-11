@@ -24,6 +24,7 @@ import {
   IonContent,
   IonBackButton,
   IonButtons,
+  useIonRouter,
 } from "@ionic/vue";
 
 import FormularioRuta from '../components/FormularioRuta.vue'
@@ -42,14 +43,15 @@ export default defineComponent({
     IonButtons,
     FormularioRuta,
   },
-  methods: {
-    anadirRuta(memoryData: any){
-      this.$store.dispatch('anadirRuta', memoryData);
-      this.$router.replace('/tabs/tab1');
-    }
-  },
   setup() {
+    const ionRouter = useIonRouter();
+    
+    function anadirRuta(){
+      ionRouter.push('/tabs/tab1');
+    }
+    
     return {
+      anadirRuta,
       resizeOutline,
       repeatOutline,
       flagOutline,
