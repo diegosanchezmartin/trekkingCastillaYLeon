@@ -132,20 +132,7 @@ export default defineComponent({
     IonItem,
     IonCardHeader,
     IonActionSheet
-  },
-  /*methods: {
-    async setShowActionSheet() {
-      const actionSheet = await actionSheetController
-      .create({
-        header: 'Iconos perfil',
-        buttons : [],
-      });
-      await actionSheet.present();
-
-      const { data } = await actionSheet.onDidDismiss();
-      console.log('Cuadro resuelto con datos: ', data);
-    }
-  },*/ 
+  }, 
   setup() {
     const isOpenRef = ref(false);
     const setOpen = (state: boolean) => isOpenRef.value = state;
@@ -195,6 +182,7 @@ export default defineComponent({
       fotoPerfil: "",
       modo: ModoDeAutenticacion.IniciarSesion,
       mensajeError: "",
+      contadorInicial: 0,
     });
     const IniciarSesionConEmailYConstaseña = async (
       email: string,
@@ -233,6 +221,10 @@ export default defineComponent({
         db.collection("users").doc(authRes.user?.uid).set({
           nombre,
           email,
+          puntuacionInicial: state.contadorInicial,
+          rutasRealizadas: state.contadorInicial,
+          rutasAnadidas: state.contadorInicial,
+          rutasModificadas: state.contadorInicial,
         });
         const user = auth.currentUser;
         user.updateProfile({

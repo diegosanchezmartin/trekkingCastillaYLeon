@@ -8,7 +8,7 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Usersame</ion-title>
+          <ion-title size="large"> {{currentUser.displayName }}</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-card>
@@ -18,16 +18,22 @@
               <ion-avatar slot="start">
                 <img src="../pictures/FotoPerfil1.jpg" />
               </ion-avatar>
-              <ion-label>{{currentUser.displayName}}</ion-label>
+              <ion-label>{{ currentUser.displayName }}</ion-label>
             </ion-item>
             <ion-item>
-              <ion-label color="primary">Rutas realizadas: </ion-label>
+              <ion-label color="primary"
+                >Rutas realizadas: {{ rutasRealizadas }}</ion-label
+              >
             </ion-item>
             <ion-item>
-              <ion-label color="secondary">Rutas añadidas: </ion-label>
+              <ion-label color="secondary"
+                >Rutas añadidas: {{ rutasAnadidas }}</ion-label
+              >
             </ion-item>
             <ion-item>
-              <ion-label color="tertiary">Rutas modificadas: </ion-label>
+              <ion-label color="tertiary"
+                >Rutas modificadas: {{ rutasModificadas }}</ion-label
+              >
             </ion-item>
             <ion-item>
               <ion-label
@@ -44,14 +50,14 @@
           <ion-card-content> </ion-card-content>
         </ion-card>
         <ion-card>
-          <ion-row>
-            <ion-col v-for="ruta in rutas" v-bind:key="ruta.id">
+          <ion-row size="4">
+            <ion-col size="4" v-for="ruta in rutas" v-bind:key="ruta.id">
               <swiper pager="true" :options="slideOpts">
                 <swiper-slide
-                  v-for="(imagen, index) in ruta.imagenes"
+                  v-for="(imagen, index) in ruta.fotos"
                   v-bind:key="index"
                 >
-                  <ion-img :src="imagen.webviewPath" />
+                  <ion-img :src="imagen" />
                 </swiper-slide>
               </swiper>
             </ion-col>
@@ -64,7 +70,8 @@
 
 <script lang="ts">
 import { cogOutline, pencilOutline } from "ionicons/icons";
-import { defineComponent } from "vue";
+import { defineComponent, reactive, toRefs } from "vue";
+import { doc, getDoc, getDocs, collection } from "@firebase/firestore";
 import {
   IonPage,
   IonHeader,
@@ -85,7 +92,7 @@ import {
 } from "@ionic/vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { auth } from "@/main";
+import { auth, db } from "@/main";
 import "swiper/css";
 import "@ionic/vue/css/ionic-swiper.css";
 
@@ -111,27 +118,59 @@ export default defineComponent({
     SwiperSlide,
     IonImg,
   },
-  computed: {
-    rutas() {
-      return this.$store.getters.rutasPerfil;
-    },
-  },
   data() {
-    const currentUser = auth.currentUser;
     return {
-      currentUser,
-    }
+      rutasRealizadas: 0,
+      rutasAnadidas: 0,
+      rutasModificadas: 0,
+    };
   },
   setup() {
+    const state = reactive({
+      rutas: [],
+    });
+    const currentUser = auth.currentUser;
     const slideOpts = {
       initialSlide: 0,
       speed: 400,
     };
+    async function obtenerRutasUsuario() {
+      const contadores = doc(db, "users", auth.currentUser.uid);
+      const querySnapshot = await getDoc(contadores);
+      const infoUsuario = querySnapshot.data();
+      this.rutasRealizadas = infoUsuario.rutasRealizadas;
+      this.rutasModificadas = infoUsuario.rutasModificadas;
+      this.rutasAnadidas = infoUsuario.rutasAnadidas;
+
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .collection("rutasUsuario")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((collection) => {
+            state.rutas.push({
+              fotos: collection.data().imagenesIntroducidas,
+            });
+          });
+        });
+    }
     return {
+      obtenerRutasUsuario,
+      ...toRefs(state),
+      currentUser,
       slideOpts,
       cogOutline,
       pencilOutline,
     };
+  },
+  watch: {
+    $route(to, from) {
+      this.rutas = [];
+      this.obtenerRutasUsuario();
+    },
+  },
+  mounted() {
+    this.obtenerRutasUsuario();
   },
 });
 </script>

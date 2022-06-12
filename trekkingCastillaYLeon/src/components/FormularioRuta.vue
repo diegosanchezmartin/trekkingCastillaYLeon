@@ -172,6 +172,7 @@ import {
 import { useStore } from "vuex";
 import { usePhotoGallery, UserPhoto } from "../camera/usePhotoGallery";
 import { storage, auth, db } from "../main";
+import firebase from "firebase/compat/app";
 
 function uuidv4() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -255,9 +256,17 @@ export default defineComponent({
         fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
         iconoIntroducido: this.iconoIntroducido,
         fechaPublicacion: `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`,
+      });
+
+      db.collection("users").doc(auth.currentUser.uid).update(
+        {rutasAnadidas: firebase.firestore.FieldValue.increment(1)}
+      )
+
+      db.collection("users").doc(auth.currentUser.uid).collection("rutasUsuario").doc(this.nombreRutaIntroducido).set({
+        imagenesIntroducidas: urlsFotos,
       }).then(
-         this.$emit("anadir-ruta")
-      );
+        this.$emit("anadir-ruta")
+      )
 
       /*urlsFotos.forEach(async urlFoto => {
         await db
