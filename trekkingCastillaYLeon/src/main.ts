@@ -57,15 +57,11 @@ let app: any;
 
 import { defineCustomElements } from "@ionic/pwa-elements/loader";
 
-//vuex
-import { store } from "./store";
-
 auth.onAuthStateChanged(async (user) => {
   if (!app) {
     app = createApp(App)
       .use(IonicVue)
-      .use(router)
-      .use(store);
+      .use(router);
 
     router.isReady().then(() => {
       app.mount("#app");

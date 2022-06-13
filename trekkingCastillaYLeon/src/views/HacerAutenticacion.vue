@@ -32,15 +32,26 @@
               <ion-input v-model="contrasena" type="password"></ion-input>
             </ion-item>
             <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
-              <ion-button @click="setOpen(true)" >
-                Foto de perfil
-              </ion-button>
-              <ion-action-sheet
-                :is-open="isOpenRef"
-                header = "Elige tu oto de perfil"
-                :buttons="buttons"
-                @didDismiss="setOpen(false)">
-              </ion-action-sheet>
+              <ion-label position="floating">Experiencia: </ion-label>
+              <ion-select
+                interface="popover"
+                placeholder="¿Cuánta experiencia tienes?"
+                required
+                v-model="experienciaUsuario"
+              >
+                <ion-select-option value="novato"
+                  >Acabo de empezar</ion-select-option
+                >
+                <ion-select-option value="normal"
+                  >He hecho alguna ruta...</ion-select-option
+                >
+                <ion-select-option value="experto"
+                  >Suelo rutear bastante</ion-select-option
+                >
+                <ion-select-option value="pro"
+                  >Voy de marcha casi a diario</ion-select-option
+                >
+              </ion-select>
             </ion-item>
             <ion-button
               expand="block"
@@ -97,14 +108,13 @@ import {
   IonButton,
   IonLabel,
   IonItem,
-  actionSheetController,
-  IonActionSheet,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
-import { auth, db } from "../main";
+import { auth, db, storage } from "../main";
 import { reactive, toRefs } from "vue";
 import { useIonRouter } from "@ionic/vue";
 import { defineComponent, ref } from "vue";
-import { leafOutline, schoolOutline, medalOutline, flameOutline} from "ionicons/icons";
 import { data } from "dom7";
 
 enum ModoDeAutenticacion {
@@ -131,55 +141,18 @@ export default defineComponent({
     IonLabel,
     IonItem,
     IonCardHeader,
-    IonActionSheet
+    IonSelect,
+    IonSelectOption,
   }, 
   setup() {
     const isOpenRef = ref(false);
     const setOpen = (state: boolean) => isOpenRef.value = state;
-    const buttons = [
-          {
-            text: 'No has hecho nunca una ruta?',
-            icon: leafOutline,
-            id: 'noob-button',
-            data: 'noob',
-            handler: () => {
-              console.log('Hoja seleccionada');
-            },
-          },
-          {
-            text: 'Has salido de marcha alguna vez...',
-            icon: schoolOutline,
-            id: 'normal-button',
-            data: 'normal',
-            handler: () => {
-              console.log('Birrete seleccionado');
-            },
-          },
-          {
-            text: 'Vas a la montaña todos los fines de semana',
-            icon: medalOutline,
-            id: 'expert-button',
-            data: 'expert',
-            handler: () => {
-              console.log('Medalla seleccionada');
-            },
-          },
-          {
-            text: 'Vives para rutear y ruteas para vivir',
-            icon: flameOutline,
-            id: 'pro-button',
-            data: 'pro',
-            handler: () => {
-              console.log('Llama seleccionada');
-            },
-          },
-        ];
     const ionRouter = useIonRouter();
     const state = reactive({
       nombre: "",
       email: "",
       contrasena: "",
-      fotoPerfil: "",
+      experienciaUsuario: "",
       modo: ModoDeAutenticacion.IniciarSesion,
       mensajeError: "",
       contadorInicial: 0,
@@ -218,6 +191,17 @@ export default defineComponent({
           email,
           contrasena
         );
+        const storageRef = storage.ref();
+        var fotoUsuario: string;
+        if(state.experienciaUsuario == "novato"){
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/novato.jpg").getDownloadURL();
+        }else if(state.experienciaUsuario == "normal"){
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/normal.jpg").getDownloadURL();
+        }else if(state.experienciaUsuario == "experto"){
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/experto.jpg").getDownloadURL();
+        }else if(state.experienciaUsuario == "pro"){
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/pro.jpg").getDownloadURL();
+        }
         db.collection("users").doc(authRes.user?.uid).set({
           nombre,
           email,
@@ -225,6 +209,7 @@ export default defineComponent({
           rutasRealizadas: state.contadorInicial,
           rutasAnadidas: state.contadorInicial,
           rutasModificadas: state.contadorInicial,
+          fotoPerfil: fotoUsuario,
         });
         const user = auth.currentUser;
         user.updateProfile({
@@ -239,7 +224,6 @@ export default defineComponent({
       }
     };
     return {
-      buttons,
       isOpenRef,
       setOpen,
       usernameApp,
@@ -251,6 +235,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-</style>

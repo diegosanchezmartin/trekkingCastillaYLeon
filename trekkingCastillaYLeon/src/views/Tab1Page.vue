@@ -26,7 +26,7 @@
               <ion-item>
                 <ion-label>
                   <h4>{{ ruta.nombreRuta }}</h4>
-                  <h3>{{ ruta.infoRuta }} {{ ruta.kilometros }} Kms</h3>
+                  <h3> <ion-icon :icon="locationOutline"/> {{ ruta.infoRuta }} {{ ruta.kilometros }} Kms</h3>
                 </ion-label>
               </ion-item>
             </ion-card-header>
@@ -63,7 +63,7 @@
                 <ion-col center text-center>
                   <button>
                     <div>
-                      <ion-icon :icon="starOutline" /> {{ ruta.valoracion }}
+                      {{ ruta.valoracion }} <ion-icon :icon="starOutline" />
                     </div>
                   </button>
                 </ion-col>
@@ -118,6 +118,7 @@ import {
   analyticsOutline,
   addCircleOutline,
   searchOutline,
+  locationOutline,
 } from "ionicons/icons";
 import { useIonRouter } from "@ionic/vue";
 
@@ -231,6 +232,7 @@ export default defineComponent({
       analyticsOutline,
       addCircleOutline,
       searchOutline,
+      locationOutline,
       slideOpts,
       goAddRoute,
     };

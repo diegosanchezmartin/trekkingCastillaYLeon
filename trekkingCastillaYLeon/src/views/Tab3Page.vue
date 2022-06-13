@@ -8,7 +8,7 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large"> {{currentUser.displayName }}</ion-title>
+          <ion-title size="large"> {{ currentUser.displayName }}</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-card>
@@ -16,7 +16,7 @@
           <ion-card-header>
             <ion-item>
               <ion-avatar slot="start">
-                <img src="../pictures/FotoPerfil1.jpg" />
+                <img :src=imagenPerfil />
               </ion-avatar>
               <ion-label>{{ currentUser.displayName }}</ion-label>
             </ion-item>
@@ -128,6 +128,7 @@ export default defineComponent({
   setup() {
     const state = reactive({
       rutas: [],
+      imagenPerfil: "",
     });
     const currentUser = auth.currentUser;
     const slideOpts = {
@@ -141,6 +142,11 @@ export default defineComponent({
       this.rutasRealizadas = infoUsuario.rutasRealizadas;
       this.rutasModificadas = infoUsuario.rutasModificadas;
       this.rutasAnadidas = infoUsuario.rutasAnadidas;
+
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((result) => (state.imagenPerfil = result.data().fotoPerfil));
 
       db.collection("users")
         .doc(auth.currentUser?.uid)

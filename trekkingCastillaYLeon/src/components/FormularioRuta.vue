@@ -94,19 +94,19 @@
               required
               v-model="valoracionIntroducido"
             >
-              <ion-select-option value="1estrella"
+              <ion-select-option value="1"
                 >1 estrella</ion-select-option
               >
-              <ion-select-option value="2estrellas"
+              <ion-select-option value="2"
                 >2 estrellas</ion-select-option
               >
-              <ion-select-option value="3estrellas"
+              <ion-select-option value="3"
                 >3 estrellas</ion-select-option
               >
-              <ion-select-option value="4estrellas"
+              <ion-select-option value="4"
                 >4 estrellas</ion-select-option
               >
-              <ion-select-option value="5estrellas"
+              <ion-select-option value="5"
                 >5 estrellas</ion-select-option
               >
             </ion-select>
