@@ -17,7 +17,7 @@
               v-model="nombreRutaIntroducido"
             ></ion-input>
           </ion-item>
-          <ion-item> 
+          <ion-item>
             <ion-label position="floating"
               >¿Dónde has realizado la ruta?</ion-label
             >
@@ -94,21 +94,11 @@
               required
               v-model="valoracionIntroducido"
             >
-              <ion-select-option value="1"
-                >1 estrella</ion-select-option
-              >
-              <ion-select-option value="2"
-                >2 estrellas</ion-select-option
-              >
-              <ion-select-option value="3"
-                >3 estrellas</ion-select-option
-              >
-              <ion-select-option value="4"
-                >4 estrellas</ion-select-option
-              >
-              <ion-select-option value="5"
-                >5 estrellas</ion-select-option
-              >
+              <ion-select-option value="1">1 estrella</ion-select-option>
+              <ion-select-option value="2">2 estrellas</ion-select-option>
+              <ion-select-option value="3">3 estrellas</ion-select-option>
+              <ion-select-option value="4">4 estrellas</ion-select-option>
+              <ion-select-option value="5">5 estrellas</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-item>
@@ -140,7 +130,12 @@
 </template>
 
 <script lang="ts">
-import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera'
+import {
+  Camera,
+  CameraResultType,
+  CameraSource,
+  Photo,
+} from "@capacitor/camera";
 import { defineComponent, computed, ref } from "vue";
 import { usernameApp } from "@/views/HacerAutenticacion.vue";
 import {
@@ -221,52 +216,74 @@ export default defineComponent({
   setup() {
     var images = [];
     var urlsFotos = [];
-    var url = '';
+    var url = "";
     const user = auth.currentUser;
     const takePicture = async () => {
       const image = await Camera.getPhoto({
         quality: 90,
         allowEditing: false,
-        resultType: CameraResultType.Base64
+        resultType: CameraResultType.Base64,
       });
-      if(image?.base64String) {
+      if (image?.base64String) {
         const guid = uuidv4();
         const filepath = `${user?.uid}/images/${guid}.${image.format}`;
         const storageRef = storage.ref();
-        await storageRef.child(filepath).putString(image.base64String, 'base64');
+        await storageRef
+          .child(filepath)
+          .putString(image.base64String, "base64");
         url = await storageRef.child(filepath).getDownloadURL();
         console.log(image);
         images.push(image);
         console.log(url);
         urlsFotos.push(url);
       }
-    }
+    };
     async function guardarRuta() {
       const current = new Date();
-      db.collection("rutas").doc(this.nombreRutaIntroducido).set({
-        nombreRuta: this.nombreRutaIntroducido,
-        infoRuta: this.infoRutaIntroducido,
-        //imagenesIntroducidas: this.photos,
-        imagenesIntroducidas: urlsFotos,
-        usuarioIntroducido: auth.currentUser.displayName,
-        nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
-        tipoRuta: this.tipoRutaIntroducido,
-        valoracion: this.valoracionIntroducido,
-        kilometros: this.kilometrosIntroducidos,
-        fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
-        iconoIntroducido: this.iconoIntroducido,
-        fechaPublicacion: `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`,
-      });
+      db.collection("rutas")
+        .doc(this.nombreRutaIntroducido)
+        .set({
+          nombreRuta: this.nombreRutaIntroducido,
+          infoRuta: this.infoRutaIntroducido,
+          //imagenesIntroducidas: this.photos,
+          imagenesIntroducidas: urlsFotos,
+          usuarioIntroducido: auth.currentUser.displayName,
+          nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
+          tipoRuta: this.tipoRutaIntroducido,
+          valoracion: this.valoracionIntroducido,
+          kilometros: this.kilometrosIntroducidos,
+          fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
+          iconoIntroducido: this.iconoIntroducido,
+          emailUsuario:auth.currentUser.email,
+          fechaPublicacion: `${current.getDate()}/${
+            current.getMonth() + 1
+          }/${current.getFullYear()}`,
+        });
 
-      db.collection("users").doc(auth.currentUser.uid).update(
-        {rutasAnadidas: firebase.firestore.FieldValue.increment(1)}
-      )
-
-      db.collection("users").doc(auth.currentUser.uid).collection("rutasUsuario").doc(this.nombreRutaIntroducido).set({
-        imagenesIntroducidas: urlsFotos,
-      }).then(
-        this.$emit("anadir-ruta")
-      )
+      if (this.tipoRutaIntroducido == "rutaCircular" || this.tipoRutaIntroducido == "rutaLineal") {
+        db.collection("users")
+          .doc(auth.currentUser.uid)
+          .update({
+            rutasAnadidas: firebase.firestore.FieldValue.increment(1),
+            puntuacion: firebase.firestore.FieldValue.increment(5),
+          });
+      } else if (this.tipoRutaIntroducido == "ascension") {
+        db.collection("users")
+          .doc(auth.currentUser.uid)
+          .update({
+            rutasAnadidas: firebase.firestore.FieldValue.increment(1),
+            puntuacion: firebase.firestore.FieldValue.increment(15),
+          });
+      }
+ 
+      db.collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("rutasUsuario")
+        .doc(this.nombreRutaIntroducido)
+        .set({
+          imagenesIntroducidas: urlsFotos,
+        })
+        .then(this.$emit("anadir-ruta"));
 
       /*urlsFotos.forEach(async urlFoto => {
         await db
@@ -276,16 +293,13 @@ export default defineComponent({
           .add({
             image: urlFoto,
           })
-      });*/ 
+      });*/
     }
 
     const { photos, takePhoto } = usePhotoGallery();
-    const store = useStore();
     return {
       urlsFotos,
       usernameApp,
-      value: computed(() => store.state.count),
-      anadirDatos: () => store.dispatch("anadirRuta"),
       resizeOutline,
       addOutline,
       repeatOutline,

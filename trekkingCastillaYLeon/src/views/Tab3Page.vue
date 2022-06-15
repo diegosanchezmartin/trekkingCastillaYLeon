@@ -8,7 +8,7 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large"> {{ currentUser.displayName }}</ion-title>
+          <ion-title size="large"> {{ nombreUser }}</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-card>
@@ -128,6 +128,7 @@ export default defineComponent({
   setup() {
     const state = reactive({
       rutas: [],
+      nombreUser: "",
       imagenPerfil: "",
     });
     const currentUser = auth.currentUser;
@@ -146,7 +147,10 @@ export default defineComponent({
       db.collection("users")
         .doc(auth.currentUser?.uid)
         .get()
-        .then((result) => (state.imagenPerfil = result.data().fotoPerfil));
+        .then((result) => {
+          state.imagenPerfil = result.data().fotoPerfil,
+          state.nombreUser = result.data().nombre + " " + result.data().apellidos
+        });
 
       db.collection("users")
         .doc(auth.currentUser?.uid)

@@ -23,6 +23,10 @@
               <ion-label position="floating">Nombre</ion-label>
               <ion-input v-model="nombre"></ion-input>
             </ion-item>
+            <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
+              <ion-label position="floating">Apellidos</ion-label>
+              <ion-input v-model="apellidos"></ion-input>
+            </ion-item>
             <ion-item>
               <ion-label position="floating">Email</ion-label>
               <ion-input v-model="email"></ion-input>
@@ -30,6 +34,43 @@
             <ion-item>
               <ion-label position="floating">Contraseña</ion-label>
               <ion-input v-model="contrasena" type="password"></ion-input>
+            </ion-item>
+            <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
+              <ion-label position="floating">Provincia: </ion-label>
+              <ion-select
+                interface="popover"
+                placeholder="Selecciona tu provincia"
+                required
+                v-model="provinciaUsuario"
+              >
+                <ion-select-option value="leon"
+                  >León</ion-select-option
+                >
+                <ion-select-option value="zamora"
+                  >Zamora</ion-select-option
+                >
+                <ion-select-option value="salamanca"
+                  >Salamanca</ion-select-option
+                >
+                <ion-select-option value="palencia"
+                  >Palencia</ion-select-option
+                >
+                <ion-select-option value="valladolid"
+                  >Valladolid</ion-select-option
+                >
+                <ion-select-option value="avila"
+                  >Ávila</ion-select-option
+                >
+                <ion-select-option value="burgos"
+                  >Burgos</ion-select-option
+                >
+                <ion-select-option value="soria"
+                  >Soria</ion-select-option
+                >
+                <ion-select-option value="segovia"
+                  >Segovia</ion-select-option
+                >
+              </ion-select>
             </ion-item>
             <ion-item v-if="modo === ModoDeAutenticacion.Registrarse">
               <ion-label position="floating">Experiencia: </ion-label>
@@ -150,8 +191,10 @@ export default defineComponent({
     const ionRouter = useIonRouter();
     const state = reactive({
       nombre: "",
+      apellidos: "",
       email: "",
       contrasena: "",
+      provinciaUsuario: "",
       experienciaUsuario: "",
       modo: ModoDeAutenticacion.IniciarSesion,
       mensajeError: "",
@@ -204,11 +247,13 @@ export default defineComponent({
         }
         db.collection("users").doc(authRes.user?.uid).set({
           nombre,
+          apellidos: state.apellidos,
           email,
-          puntuacionInicial: state.contadorInicial,
+          puntuacion: state.contadorInicial,
           rutasRealizadas: state.contadorInicial,
           rutasAnadidas: state.contadorInicial,
           rutasModificadas: state.contadorInicial,
+          provincia: state.provinciaUsuario,
           fotoPerfil: fotoUsuario,
         });
         const user = auth.currentUser;

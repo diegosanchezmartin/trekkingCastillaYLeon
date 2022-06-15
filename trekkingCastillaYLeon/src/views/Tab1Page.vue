@@ -21,12 +21,15 @@
       </ion-header>
       <ion-list>
         <ion-item v-for="ruta in rutas" v-bind:key="ruta.id">
-          <ion-card>
+          <ion-card class="ruta">
             <ion-card-header>
               <ion-item>
                 <ion-label>
                   <h4>{{ ruta.nombreRuta }}</h4>
-                  <h3> <ion-icon :icon="locationOutline"/> {{ ruta.infoRuta }} {{ ruta.kilometros }} Kms</h3>
+                  <h3>
+                    <ion-icon :icon="locationOutline" /> {{ ruta.infoRuta }}
+                    {{ ruta.kilometros }} Kms
+                  </h3>
                 </ion-label>
               </ion-item>
             </ion-card-header>
@@ -41,7 +44,7 @@
             <ion-card-content>
               <ion-item>
                 <ion-avatar slot="end">
-                  <img :src="ruta.fotoPerfilUsuario" />
+                  <img :src="ruta.fotoPerfilUsuarioIntroducida" />
                 </ion-avatar>
                 <ion-text color="dark">
                   <h3>{{ ruta.usuario }}</h3>
@@ -165,7 +168,14 @@ export default defineComponent({
     };
     async function obtenerRutasDisponibles() {
       const querySnapshot = await getDocs(collection(db, "rutas"));
-      querySnapshot.forEach((doc) => {
+      var fotoUsuario;
+      querySnapshot.forEach(async (doc) => {
+        const querySnapshotFotoUser = await getDocs(collection(db, "users"));
+        querySnapshotFotoUser.forEach((docFoto) => {
+          if (docFoto.data().email == doc.data().emailUsuario) {
+            fotoUsuario = docFoto.data().fotoPerfil;
+          }
+        });
         if (doc.data().tipoRuta == "rutaCircular") {
           state.rutas.push({
             id: doc.id,
@@ -177,10 +187,10 @@ export default defineComponent({
             tipoRuta: "Circular",
             valoracion: doc.data().valoracion,
             kilometros: doc.data().kilometros,
-            fotoPerfilUsuarioIntroducida:
-              doc.data().fotoPerfilUsuarioIntroducida,
+            fotoPerfilUsuarioIntroducida: fotoUsuario,
             iconoIntroducido: repeatOutline,
             fechaPublicacion: doc.data().fechaPublicacion,
+            emailRuta: doc.data().emailUsuario,
           });
         } else if (doc.data().tipoRuta == "rutaLineal") {
           state.rutas.push({
@@ -193,10 +203,10 @@ export default defineComponent({
             tipoRuta: "Lineal",
             valoracion: doc.data().valoracion,
             kilometros: doc.data().kilometros,
-            fotoPerfilUsuarioIntroducida:
-              doc.data().fotoPerfilUsuarioIntroducida,
+            fotoPerfilUsuarioIntroducida: fotoUsuario,
             iconoIntroducido: resizeOutline,
             fechaPublicacion: doc.data().fechaPublicacion,
+            emailRuta: doc.data().emailUsuario,
           });
         }
         if (doc.data().tipoRuta == "ascension") {
@@ -210,10 +220,10 @@ export default defineComponent({
             tipoRuta: "Ascension",
             valoracion: doc.data().valoracion,
             kilometros: doc.data().kilometros,
-            fotoPerfilUsuarioIntroducida:
-              doc.data().fotoPerfilUsuarioIntroducida,
+            fotoPerfilUsuarioIntroducida: fotoUsuario,
             iconoIntroducido: flagOutline,
             fechaPublicacion: doc.data().fechaPublicacion,
+            emailRuta: doc.data().emailUsuario,
           });
         }
         console.log(doc.id, " => ", doc.data());
@@ -252,6 +262,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.ruta {
+  width: 100%;
+}
 .swiper-pagination-bullet {
   background: black;
   opacity: 0.4;
