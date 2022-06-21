@@ -13,41 +13,93 @@
       </ion-header>
       <ion-card>
         <ion-card>
-          <ion-card-header>
+          <ion-card-header class="cabeceraRutas">
             <ion-item>
-              <ion-avatar slot="start">
-                <img :src=imagenPerfil />
-              </ion-avatar>
-              <ion-label>{{ currentUser.displayName }}</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label color="primary"
-                >Rutas realizadas: {{ rutasRealizadas }}</ion-label
-              >
-            </ion-item>
-            <ion-item>
-              <ion-label color="secondary"
-                >Rutas añadidas: {{ rutasAnadidas }}</ion-label
-              >
-            </ion-item>
-            <ion-item>
-              <ion-label color="tertiary"
-                >Rutas modificadas: {{ rutasModificadas }}</ion-label
-              >
-            </ion-item>
-            <ion-item>
-              <ion-label
-                >Nuevo aventurero con muchas ganas de patear!</ion-label
-              >
-              <ion-button color="medium">
-                <ion-icon :icon="pencilOutline" />
-              </ion-button>
-              <ion-button color="medium">
-                <ion-icon :icon="cogOutline" />
-              </ion-button>
+              <ion-grid>
+                <ion-col>
+                  <ion-row>
+                    <ion-item>
+                      <ion-avatar slot="start">
+                        <img :src="imagenPerfil" />
+                      </ion-avatar>
+                      <ion-label>{{ currentUser.displayName }}</ion-label>
+                      <ion-item>
+                        <ion-button color="medium">
+                          <ion-icon :icon="pencilOutline" />
+                        </ion-button>
+                        <ion-button color="medium">
+                          <ion-icon :icon="cogOutline" />
+                        </ion-button>
+                      </ion-item>
+                    </ion-item>
+                  </ion-row>
+                  <ion-row>
+                    <ion-grid class="gridRutas">
+                      <ion-row class="filaRutas">
+                        <ion-card class="columnaRutas">
+                          <ion-card-header>
+                            <ion-row>
+                              <ion-label class="etiquetaRutas" color="primary"
+                                >Rutas</ion-label
+                              >
+                              <ion-row> </ion-row>
+                              <ion-label class="etiquetaRutas" color="primary"
+                                >realizadas:</ion-label
+                              >
+                            </ion-row>
+                          </ion-card-header>
+                          <ion-card-content>
+                            <ion-label class="etiquetaRutas" color="primary">
+                              {{ rutasRealizadas }}
+                            </ion-label>
+                          </ion-card-content>
+                        </ion-card>
+                        <ion-card class="columnaRutas">
+                          <ion-card-header>
+                            <ion-row>
+                              <ion-label class="etiquetaRutas" color="primary"
+                                >Rutas</ion-label
+                              >
+                              <ion-row> </ion-row>
+                              <ion-label class="etiquetaRutas" color="primary"
+                                >añadidas:</ion-label
+                              >
+                            </ion-row>
+                          </ion-card-header>
+                          <ion-card-content>
+                            <ion-label class="etiquetaRutas" color="primary">
+                              {{ rutasAnadidas }}
+                            </ion-label>
+                          </ion-card-content>
+                        </ion-card>
+                        <ion-card class="columnaRutas">
+                          <ion-card-header>
+                            <ion-row>
+                              <ion-label class="etiquetaRutas" color="primary"
+                                >Rutas</ion-label
+                              >
+                              <ion-row> </ion-row>
+                              <ion-label class="etiquetaRutas" color="primary"
+                                >modificadas:</ion-label
+                              >
+                            </ion-row>
+                          </ion-card-header>
+                          <ion-card-content>
+                            <ion-label class="etiquetaRutas" color="primary">
+                              {{ rutasModificadas }}
+                            </ion-label>
+                          </ion-card-content>
+                        </ion-card>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-row>
+                </ion-col>
+              </ion-grid>
             </ion-item>
           </ion-card-header>
-          <ion-card-content> </ion-card-content>
+          <ion-card-content>
+            Nuevo aventurero con muchas ganas de patear!
+          </ion-card-content>
         </ion-card>
         <ion-card>
           <ion-row size="4">
@@ -72,6 +124,7 @@
 import { cogOutline, pencilOutline } from "ionicons/icons";
 import { defineComponent, reactive, toRefs } from "vue";
 import { doc, getDoc, getDocs, collection } from "@firebase/firestore";
+
 import {
   IonPage,
   IonHeader,
@@ -80,7 +133,6 @@ import {
   IonContent,
   IonItem,
   IonCard,
-  IonCardContent,
   IonCardHeader,
   IonAvatar,
   IonLabel,
@@ -106,7 +158,6 @@ export default defineComponent({
     IonPage,
     IonItem,
     IonCard,
-    IonCardContent,
     IonCardHeader,
     IonAvatar,
     IonLabel,
@@ -148,8 +199,9 @@ export default defineComponent({
         .doc(auth.currentUser?.uid)
         .get()
         .then((result) => {
-          state.imagenPerfil = result.data().fotoPerfil,
-          state.nombreUser = result.data().nombre + " " + result.data().apellidos
+          (state.imagenPerfil = result.data().fotoPerfil),
+            (state.nombreUser =
+              result.data().nombre + " " + result.data().apellidos);
         });
 
       db.collection("users")
@@ -184,3 +236,27 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.cabeceraRutas {
+  padding: 0px;
+  padding-inline: 0px;
+}
+.filaRutas {
+  display: flex;
+  justify-content: space-between;
+}
+.columnaRutas {
+  width: 32%;
+  margin: 0px;
+}
+.etiquetaRutas {
+  font-size: x-small;
+}
+
+.gridRutas {
+  margin: 5% 0% -3% 0%;
+}
+
+
+</style>

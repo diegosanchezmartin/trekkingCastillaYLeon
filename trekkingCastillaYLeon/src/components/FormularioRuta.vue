@@ -121,6 +121,12 @@
             </ion-select>
           </ion-item>
         </ion-list>
+         <ion-list>
+          <ion-list-header>
+            <ion-label>Progreso al siguiente nivel: 50%</ion-label>
+          </ion-list-header>
+          <ion-progress-bar value="0.5"></ion-progress-bar>
+        </ion-list>
         <ion-button expand="block" fill="outline" color="dark" type="submit">
           Añadir ruta
         </ion-button>
@@ -156,6 +162,7 @@ import {
   IonRow,
   IonGrid,
   IonPage,
+  IonProgressBar,
 } from "@ionic/vue";
 
 import {
@@ -198,6 +205,7 @@ export default defineComponent({
     IonRow,
     IonGrid,
     IonPage,
+    IonProgressBar,
   },
   data() {
     return {

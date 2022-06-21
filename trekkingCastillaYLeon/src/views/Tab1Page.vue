@@ -5,7 +5,16 @@
         <ion-title>Explora</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" v-if="cargando">
+      <ion-grid class="grid">
+        <ion-row class="row">
+          <ion-col class="col">
+            <iconoSVG />
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+    <ion-content :fullscreen="true" v-else>
       <ion-header collapse="condense">
         <ion-item>
           <ion-button @click="goAddRoute()" color="medium">
@@ -33,7 +42,13 @@
                 </ion-label>
               </ion-item>
             </ion-card-header>
-            <swiper pager="true" :options="slideOpts">
+            <swiper
+              :modules="modules"
+              pager="true"
+              :options="slideOpts"
+              navigation
+              :pagination="{ clickable: true }"
+            >
               <swiper-slide
                 v-for="(photo, index) in ruta.imagenesIntroducidas"
                 :key="index"
@@ -124,9 +139,13 @@ import {
   locationOutline,
 } from "ionicons/icons";
 import { useIonRouter } from "@ionic/vue";
-
+import iconoSVG from "../components/IconoSVG.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination } from "swiper";
+
 import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "@ionic/vue/css/ionic-swiper.css";
 
 export default defineComponent({
@@ -153,6 +172,12 @@ export default defineComponent({
     Swiper,
     SwiperSlide,
     IonImg,
+    iconoSVG,
+  },
+  data() {
+    return {
+      cargando: false,
+    };
   },
   setup() {
     const state = reactive({
@@ -167,6 +192,7 @@ export default defineComponent({
       ionRouter.push("/tabs/anadirRutaNueva");
     };
     async function obtenerRutasDisponibles() {
+      this.cargando = true;
       const querySnapshot = await getDocs(collection(db, "rutas"));
       var fotoUsuario;
       querySnapshot.forEach(async (doc) => {
@@ -228,6 +254,7 @@ export default defineComponent({
         }
         console.log(doc.id, " => ", doc.data());
       });
+      this.cargando = false;
       console.log(state.rutas);
     }
 
@@ -245,23 +272,36 @@ export default defineComponent({
       locationOutline,
       slideOpts,
       goAddRoute,
+      modules: [Navigation, Pagination],
     };
   },
   watch: {
     $route(to, from) {
       this.rutas = [];
       this.obtenerRutasDisponibles();
-      console.log("aqui");
     },
   },
   mounted() {
     this.obtenerRutasDisponibles();
-    console.log("Aqui");
   },
 });
 </script>
 
 <style scoped>
+.grid {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.col {
+  display: flex;
+  justify-content: center;
+}
+
+.row {
+  width: 100%;
+}
 .ruta {
   width: 100%;
 }

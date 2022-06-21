@@ -34,34 +34,34 @@
           </ion-row>
           <ion-row>
             <ion-list>
-              <ion-item>
+              <ion-item v-if="primero.name !== ''">
                 <ion-avatar slot="start">
-                  <img :src="primeroProvincial.photo" />
+                  <img :src="primero.photo" />
                 </ion-avatar>
                 <ion-label>
                   <h2>Primero</h2>
-                  <h3>{{ primeroProvincial.name }}</h3>
-                  <p>Puntuacion: {{ primeroProvincial.pts }}</p>
+                  <h3>{{ primero.name }}</h3>
+                  <p>Puntuacion: {{ primero.pts }}</p>
                 </ion-label>
               </ion-item>
-              <ion-item>
+              <ion-item v-if="segundo.name !== ''">
                 <ion-avatar slot="start">
-                  <img :src="segundoProvincial.photo" />
+                  <img :src="segundo.photo" />
                 </ion-avatar>
                 <ion-label>
                   <h2>Segundo</h2>
-                  <h3>{{ segundoProvincial.name }}</h3>
-                  <p>Puntuacion: {{ segundoProvincial.pts }}</p>
+                  <h3>{{ segundo.name }}</h3>
+                  <p>Puntuacion: {{ segundo.pts }}</p>
                 </ion-label>
               </ion-item>
-              <ion-item>
+              <ion-item v-if="tercero.name !== ''">
                 <ion-avatar slot="start">
-                  <img :src="terceroProvincial.photo" />
+                  <img :src="tercero.photo" />
                 </ion-avatar>
                 <ion-label>
                   <h2>Tercero</h2>
-                  <h3>{{ terceroProvincial.name }}</h3>
-                  <p>Puntuacion: {{ terceroProvincial.pts }}</p>
+                  <h3>{{ tercero.name }}</h3>
+                  <p>Puntuacion: {{ tercero.pts }}</p>
                 </ion-label>
               </ion-item>
             </ion-list>
@@ -115,24 +115,44 @@ export default defineComponent({
   },
   data() {
     return {
-      primeroProvincial: { photo: "", name: "", pts: 0 },
-      segundoProvincial: { photo: "", name: "", pts: 0 },
-      terceroProvincial: { photo: "", name: "", pts: 0 },
-      primeroRegional: { photo: "", name: "", pts: 0 },
-      segundoRegional: { photo: "", name: "", pts: 0 },
-      terceroRegional: { photo: "", name: "", pts: 0 },
+      provincial: true,
+      primero: { photo: "", name: "", pts: 0 },
+      segundo: { photo: "", name: "", pts: 0 },
+      tercero: { photo: "", name: "", pts: 0 },
     };
   },
   methods: {
     segmentChanged(ev: CustomEvent) {
-      console.log("Segment changed", ev);
+      this.primero.photo = "";
+      this.primero.name = "";
+      this.primero.ptos = 0;
+      this.segundo.photo = "";
+      this.segundo.name = "";
+      this.segundo.ptos = 0;
+      this.tercero.photo = "";
+      this.tercero.name = "";
+      this.tercero.ptos = 0;
+      console.log("Reseteados, sus valores son: ");
+      console.log("Primero: ");
+      console.log(this.primero.name);
+      console.log("Segundo: ");
+      console.log(this.segundo.name);
+      console.log("Tercero: ");
+      console.log(this.tercero.name);
+      console.log(this.provincial);
+      if (this.provincial == true) {
+        this.obtenerRankingRegional();
+        this.provincial = false;
+      } else {
+        this.obtenerRankingProvincial();
+        this.provincial = true;
+      }
     },
   },
   setup() {
-    async function obtenerRanking() {
+    async function obtenerRankingProvincial() {
       const querySnapshot = await getDocs(collection(db, "users"));
       var provinciaUser;
-      var ptsPrimeroReg, ptsSegundoReg, ptsTerceroReg;
       db.collection("users")
         .doc(auth.currentUser?.uid)
         .get()
@@ -140,55 +160,49 @@ export default defineComponent({
           provinciaUser = result.data().provincia;
           querySnapshot.forEach((doc) => {
             if (doc.data().provincia === provinciaUser) {
-              if (this.primeroProvincial.name == "") {
-                this.primeroProvincial.name =
+              if (this.primero.name == "") {
+                this.primero.name =
                   doc.data().nombre + " " + doc.data().apellidos;
-                this.primeroProvincial.pts = parseInt(doc.data().puntuacion);
-                this.primeroProvincial.photo =
-                  doc.data().fotoPerfil;
+                this.primero.pts = parseInt(doc.data().puntuacion);
+                this.primero.photo = doc.data().fotoPerfil;
               } else {
                 if (
-                  parseInt(doc.data().puntuacion) >
-                  parseInt(this.primeroProvincial.pts)
+                  parseInt(doc.data().puntuacion) > parseInt(this.primero.pts)
                 ) {
-                  //if (this.segundoProvincial == "") {
-                  this.terceroProvincial.name = this.segundoProvincial.name;
-                  this.terceroProvincial.pts = this.segundoProvincial.pts;
-                  this.terceroProvincial.photo = this.segundoProvincial.photo;
-                  this.segundoProvincial.name = this.primeroProvincial.name;
-                  this.segundoProvincial.pts = this.primeroProvincial.pts;
-                  this.segundoProvincial.photo = this.primeroProvincial.photo;
-                  this.primeroProvincial.name =
+                  //if (this.segundo == "") {
+                  this.tercero.name = this.segundo.name;
+                  this.tercero.pts = this.segundo.pts;
+                  this.tercero.photo = this.segundo.photo;
+                  this.segundo.name = this.primero.name;
+                  this.segundo.pts = this.primero.pts;
+                  this.segundo.photo = this.primero.photo;
+                  this.primero.name =
                     doc.data().nombre + " " + doc.data().apellidos;
-                  this.primeroProvincial.pts = doc.data().puntuacion;
-                  this.primeroProvincial.photo =
-                    doc.data().fotoPerfil;
+                  this.primero.pts = doc.data().puntuacion;
+                  this.primero.photo = doc.data().fotoPerfil;
                   //} else {
 
                   //}
                 } else {
                   if (
-                    parseInt(doc.data().puntuacion) >
-                    parseInt(this.segundoProvincial.pts)
+                    parseInt(doc.data().puntuacion) > parseInt(this.segundo.pts)
                   ) {
-                    this.terceroProvincial.name = this.segundoProvincial.name;
-                    this.terceroProvincial.pts = this.segundoProvincial.pts;
-                    this.terceroProvincial.photo = this.segundoProvincial.photo;
-                    this.segundoProvincial.name =
+                    this.tercero.name = this.segundo.name;
+                    this.tercero.pts = this.segundo.pts;
+                    this.tercero.photo = this.segundo.photo;
+                    this.segundo.name =
                       doc.data().nombre + " " + doc.data().apellidos;
-                    this.segundoProvincial.pts = doc.data().puntuacion;
-                    this.segundoProvincial.photo =
-                      doc.data().fotoPerfil;
+                    this.segundo.pts = doc.data().puntuacion;
+                    this.segundo.photo = doc.data().fotoPerfil;
                   } else {
                     if (
                       parseInt(doc.data().puntuacion) >
-                      parseInt(this.terceroProvincial.pts)
+                      parseInt(this.tercero.pts)
                     ) {
-                      this.terceroProvincial.name =
+                      this.tercero.name =
                         doc.data().nombre + " " + doc.data().apellidos;
-                      this.terceroProvincial.pts = doc.data().puntuacion;
-                      this.terceroProvincial.photo =
-                        doc.data().fotoPerfil;
+                      this.tercero.pts = doc.data().puntuacion;
+                      this.tercero.photo = doc.data().fotoPerfil;
                     }
                   }
                 }
@@ -197,23 +211,73 @@ export default defineComponent({
           });
         });
     }
+    async function obtenerRankingRegional() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((result) => {
+          querySnapshot.forEach((doc) => {
+            if (this.primero.name == "") {
+              this.primero.name =
+                doc.data().nombre + " " + doc.data().apellidos;
+              this.primero.pts = parseInt(doc.data().puntuacion);
+              this.primero.photo = doc.data().fotoPerfil;
+            } else {
+              if (
+                parseInt(doc.data().puntuacion) > parseInt(this.primero.pts)
+              ) {
+                //if (this.segundo == "") {
+                this.tercero.name = this.segundo.name;
+                this.tercero.pts = this.segundo.pts;
+                this.tercero.photo = this.segundo.photo;
+                this.segundo.name = this.primero.name;
+                this.segundo.pts = this.primero.pts;
+                this.segundo.photo = this.primero.photo;
+                this.primero.name =
+                  doc.data().nombre + " " + doc.data().apellidos;
+                this.primero.pts = doc.data().puntuacion;
+                this.primero.photo = doc.data().fotoPerfil;
+              } else {
+                if (
+                  parseInt(doc.data().puntuacion) > parseInt(this.segundo.pts)
+                ) {
+                  this.tercero.name = this.segundo.name;
+                  this.tercero.pts = this.segundo.pts;
+                  this.tercero.photo = this.segundo.photo;
+                  this.segundo.name =
+                    doc.data().nombre + " " + doc.data().apellidos;
+                  this.segundo.pts = doc.data().puntuacion;
+                  this.segundo.photo = doc.data().fotoPerfil;
+                } else {
+                  if (
+                    parseInt(doc.data().puntuacion) > parseInt(this.tercero.pts)
+                  ) {
+                    this.tercero.name =
+                      doc.data().nombre + " " + doc.data().apellidos;
+                    this.tercero.pts = doc.data().puntuacion;
+                    this.tercero.photo = doc.data().fotoPerfil;
+                  }
+                }
+              }
+            }
+          });
+        });
+    }
     return {
-      obtenerRanking,
+      obtenerRankingProvincial,
+      obtenerRankingRegional,
     };
   },
   watch: {
     $route(to, from) {
-      this.primeroProvincial = { photo: "", name: "", pts: 0 },
-      this.segundoProvincial = { photo: "", name: "", pts: 0 },
-      this.terceroProvincial = { photo: "", name: "", pts: 0 },
-      this.primeroRegional = { photo: "", name: "", pts: 0 },
-      this.segundoRegional = { photo: "", name: "", pts: 0 },
-      this.terceroRegional = { photo: "", name: "", pts: 0 },
-      this.obtenerRanking();
+      this.provincial = true;
+      this.obtenerRankingProvincial();
     },
   },
   mounted() {
-    this.obtenerRanking();
+    this.provincial = true;
+    this.obtenerRankingProvincial();
   },
 });
 </script>
