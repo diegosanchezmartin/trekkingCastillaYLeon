@@ -6,101 +6,157 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large"> {{ nombreUser }}</ion-title>
-        </ion-toolbar>
-      </ion-header>
       <ion-card>
-        <ion-card>
-          <ion-card-header class="cabeceraRutas">
-            <ion-item>
-              <ion-grid>
-                <ion-col>
-                  <ion-row>
-                    <ion-item>
-                      <ion-avatar slot="start">
-                        <img :src="imagenPerfil" />
-                      </ion-avatar>
-                      <ion-label>{{ currentUser.displayName }}</ion-label>
-                      <ion-item>
-                        <ion-button color="medium">
-                          <ion-icon :icon="pencilOutline" />
-                        </ion-button>
-                        <ion-button color="medium">
-                          <ion-icon :icon="cogOutline" />
-                        </ion-button>
-                      </ion-item>
-                    </ion-item>
-                  </ion-row>
-                  <ion-row>
-                    <ion-grid class="gridRutas">
-                      <ion-row class="filaRutas">
-                        <ion-card class="columnaRutas">
-                          <ion-card-header>
-                            <ion-row>
-                              <ion-label class="etiquetaRutas" color="primary"
-                                >Rutas</ion-label
-                              >
-                              <ion-row> </ion-row>
-                              <ion-label class="etiquetaRutas" color="primary"
-                                >realizadas:</ion-label
-                              >
-                            </ion-row>
-                          </ion-card-header>
-                          <ion-card-content>
-                            <ion-label class="etiquetaRutas" color="primary">
-                              {{ rutasRealizadas }}
-                            </ion-label>
-                          </ion-card-content>
-                        </ion-card>
-                        <ion-card class="columnaRutas">
-                          <ion-card-header>
-                            <ion-row>
-                              <ion-label class="etiquetaRutas" color="primary"
-                                >Rutas</ion-label
-                              >
-                              <ion-row> </ion-row>
-                              <ion-label class="etiquetaRutas" color="primary"
-                                >añadidas:</ion-label
-                              >
-                            </ion-row>
-                          </ion-card-header>
-                          <ion-card-content>
-                            <ion-label class="etiquetaRutas" color="primary">
-                              {{ rutasAnadidas }}
-                            </ion-label>
-                          </ion-card-content>
-                        </ion-card>
-                        <ion-card class="columnaRutas">
-                          <ion-card-header>
-                            <ion-row>
-                              <ion-label class="etiquetaRutas" color="primary"
-                                >Rutas</ion-label
-                              >
-                              <ion-row> </ion-row>
-                              <ion-label class="etiquetaRutas" color="primary"
-                                >modificadas:</ion-label
-                              >
-                            </ion-row>
-                          </ion-card-header>
-                          <ion-card-content>
-                            <ion-label class="etiquetaRutas" color="primary">
-                              {{ rutasModificadas }}
-                            </ion-label>
-                          </ion-card-content>
-                        </ion-card>
-                      </ion-row>
-                    </ion-grid>
-                  </ion-row>
-                </ion-col>
-              </ion-grid>
-            </ion-item>
-          </ion-card-header>
-          <ion-card-content>
-            Nuevo aventurero con muchas ganas de patear!
-          </ion-card-content>
-        </ion-card>
+        <swiper
+          :modules="modules"
+          pager="true"
+          :options="slideOpts"
+          navigation
+          :pagination="{ clickable: true }"
+        >
+          <swiper-slide>
+            <img :src="imagenPerfil" />
+          </swiper-slide>
+          <swiper-slide>
+            <ion-grid>
+              <ion-row class="filaRutas">
+                <ion-card class="columnaRutas">
+                  <ion-card-header>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="primary"
+                        >Rutas</ion-label
+                      >
+                      <ion-row> </ion-row>
+                      <ion-label class="etiquetaRutas" color="primary"
+                        >realizadas:</ion-label
+                      >
+                    </ion-row>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-label class="etiquetaRutas" color="primary">
+                      {{ rutasRealizadas }}
+                    </ion-label>
+                  </ion-card-content>
+                </ion-card>
+                <ion-card class="columnaRutas">
+                  <ion-card-header>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="secondary"
+                        >Rutas</ion-label
+                      >
+                      <ion-row> </ion-row>
+                      <ion-label class="etiquetaRutas" color="secondary"
+                        >añadidas:</ion-label
+                      >
+                    </ion-row>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-label class="etiquetaRutas" color="secondary">
+                      {{ rutasAnadidas }}
+                    </ion-label>
+                  </ion-card-content>
+                </ion-card>
+                <ion-card class="columnaRutas">
+                  <ion-card-header>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="tertiary"
+                        >Rutas</ion-label
+                      >
+                      <ion-row> </ion-row>
+                      <ion-label class="etiquetaRutas" color="tertiary"
+                        >modificadas:</ion-label
+                      >
+                    </ion-row>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-label class="etiquetaRutas" color="tertiary">
+                      {{ rutasModificadas }}
+                    </ion-label>
+                  </ion-card-content>
+                </ion-card>
+              </ion-row>
+              <ion-row class="filaRutas">
+                <ion-card class="columnaRutas">
+                  <ion-card-header>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="dark"
+                        >Puntos</ion-label
+                      >
+                      <ion-row> </ion-row>
+                      <ion-label class="etiquetaRutas" color="dark"
+                        >conseguidos:</ion-label
+                      >
+                    </ion-row>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-label class="etiquetaRutas" color="dark">
+                      {{ puntosUser }}
+                    </ion-label>
+                  </ion-card-content>
+                </ion-card>
+                <ion-card class="columnaRutas">
+                  <ion-card-header>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="medium"
+                        >Nivel</ion-label
+                      >
+                    </ion-row>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="medium"
+                        >usuario:</ion-label
+                      >
+                    </ion-row>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-label class="etiquetaRutas" color="medium">
+                      {{ nivelUser }}
+                    </ion-label>
+                  </ion-card-content>
+                </ion-card>
+                <ion-card class="columnaRutas">
+                  <ion-card-header>
+                    <ion-row>
+                      <ion-label class="etiquetaRutas" color="dark"
+                        >Provincia</ion-label
+                      >
+                      <ion-row> </ion-row>
+                      <ion-label class="etiquetaRutas" color="dark"
+                        >usuario:</ion-label
+                      >
+                    </ion-row>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-label class="etiquetaRutas" color="dark">
+                      {{ provinciaUser }}
+                    </ion-label>
+                  </ion-card-content>
+                </ion-card>
+              </ion-row>
+            </ion-grid>
+          </swiper-slide>
+        </swiper>
+        <ion-card-header>
+          <ion-card-subtitle>{{ nivelUser }}</ion-card-subtitle>
+          <ion-card-title>{{ nombreUser }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row> Nuevo aventurero con muchas ganas de patear! </ion-row>
+            <ion-row class="filaPerfilAjustes">
+              <ion-col class="columnaPerfil">
+                <ion-button class="botonPerfil" color="medium">
+                  Editar perfil
+                </ion-button>
+              </ion-col>
+              <ion-col class="columnaPerfil">
+                <ion-button class="botonPerfil" color="medium">
+                  Ajustes
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+
         <ion-card>
           <ion-row size="4">
             <ion-col size="4" v-for="ruta in rutas" v-bind:key="ruta.id">
@@ -121,9 +177,8 @@
 </template>
 
 <script lang="ts">
-import { cogOutline, pencilOutline } from "ionicons/icons";
 import { defineComponent, reactive, toRefs } from "vue";
-import { doc, getDoc, getDocs, collection } from "@firebase/firestore";
+import { doc, getDoc } from "@firebase/firestore";
 
 import {
   IonPage,
@@ -131,21 +186,22 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonItem,
   IonCard,
   IonCardHeader,
-  IonAvatar,
   IonLabel,
   IonButton,
-  IonIcon,
   IonCol,
   IonRow,
   IonImg,
 } from "@ionic/vue";
 
-import { Swiper, SwiperSlide } from "swiper/vue";
 import { auth, db } from "@/main";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination } from "swiper";
+
 import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "@ionic/vue/css/ionic-swiper.css";
 
 export default defineComponent({
@@ -156,13 +212,10 @@ export default defineComponent({
     IonTitle,
     IonContent,
     IonPage,
-    IonItem,
     IonCard,
     IonCardHeader,
-    IonAvatar,
     IonLabel,
     IonButton,
-    IonIcon,
     IonCol,
     IonRow,
     Swiper,
@@ -181,6 +234,9 @@ export default defineComponent({
       rutas: [],
       nombreUser: "",
       imagenPerfil: "",
+      puntosUser: 0,
+      nivelUser: "",
+      provinciaUser: "",
     });
     const currentUser = auth.currentUser;
     const slideOpts = {
@@ -199,9 +255,36 @@ export default defineComponent({
         .doc(auth.currentUser?.uid)
         .get()
         .then((result) => {
-          (state.imagenPerfil = result.data().fotoPerfil),
-            (state.nombreUser =
-              result.data().nombre + " " + result.data().apellidos);
+          state.imagenPerfil = result.data().fotoPerfil;
+          state.nombreUser =
+            result.data().nombre + " " + result.data().apellidos;
+          state.puntosUser = result.data().puntuacion;
+          state.provinciaUser = result.data().provincia;
+          if (result.data().puntuacion < 10) {
+            state.nivelUser = "Novat@";
+          } else if (
+            result.data().puntuacion > 10 &&
+            result.data().puntuacion < 20
+          ) {
+            state.nivelUser = "Caminante";
+          } else if (
+            result.data().puntuacion > 20 &&
+            result.data().puntuacion < 35
+          ) {
+            state.nivelUser = "Intrépid@";
+          } else if (
+            result.data().puntuacion > 35 &&
+            result.data().puntuacion < 50
+          ) {
+            state.nivelUser = "Ruter@";
+          } else if (
+            result.data().puntuacion > 50 &&
+            result.data().puntuacion < 70
+          ) {
+            state.nivelUser = "Expert@";
+          } else if (result.data().puntuacion > 70) {
+            state.nivelUser = "Pro";
+          }
         });
 
       db.collection("users")
@@ -221,8 +304,7 @@ export default defineComponent({
       ...toRefs(state),
       currentUser,
       slideOpts,
-      cogOutline,
-      pencilOutline,
+      modules: [Navigation, Pagination],
     };
   },
   watch: {
@@ -238,6 +320,26 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.filaPerfilAjustes {
+  padding: 10% 0% 0% 0;
+}
+.botonPerfil {
+  width: 80%;
+}
+.columnaPerfil {
+  display: flex;
+  justify-content: center;
+}
+.infoUser {
+  width: 100%;
+}
+.item-native {
+  padding-inline: 2%;
+}
+
+.item-inner {
+  padding-inline: 2%;
+}
 .cabeceraRutas {
   padding: 0px;
   padding-inline: 0px;
@@ -247,16 +349,10 @@ export default defineComponent({
   justify-content: space-between;
 }
 .columnaRutas {
-  width: 32%;
-  margin: 0px;
+  width: 31%;
+  margin: 4px;
 }
 .etiquetaRutas {
   font-size: x-small;
 }
-
-.gridRutas {
-  margin: 5% 0% -3% 0%;
-}
-
-
 </style>

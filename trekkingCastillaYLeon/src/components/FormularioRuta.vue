@@ -209,6 +209,7 @@ export default defineComponent({
   },
   data() {
     return {
+      niveles: { nivel1: 10, nivel2: 20, nivel3: 35, nivel4: 50, nivel5: 70, nivel6: 85},
       nombreRutaIntroducido: "",
       infoRutaIntroducido: "",
       imagenesIntroducidas: "",

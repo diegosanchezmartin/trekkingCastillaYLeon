@@ -43,31 +43,31 @@
                 required
                 v-model="provinciaUsuario"
               >
-                <ion-select-option value="leon"
+                <ion-select-option value="León"
                   >León</ion-select-option
                 >
-                <ion-select-option value="zamora"
+                <ion-select-option value="Zamora"
                   >Zamora</ion-select-option
                 >
-                <ion-select-option value="salamanca"
+                <ion-select-option value="Salamanca"
                   >Salamanca</ion-select-option
                 >
-                <ion-select-option value="palencia"
+                <ion-select-option value="Palencia"
                   >Palencia</ion-select-option
                 >
-                <ion-select-option value="valladolid"
+                <ion-select-option value="Valladolid"
                   >Valladolid</ion-select-option
                 >
-                <ion-select-option value="avila"
+                <ion-select-option value="Ávila"
                   >Ávila</ion-select-option
                 >
-                <ion-select-option value="burgos"
+                <ion-select-option value="Burgos"
                   >Burgos</ion-select-option
                 >
-                <ion-select-option value="soria"
+                <ion-select-option value="Soria"
                   >Soria</ion-select-option
                 >
-                <ion-select-option value="segovia"
+                <ion-select-option value="Segovia"
                   >Segovia</ion-select-option
                 >
               </ion-select>
@@ -237,13 +237,13 @@ export default defineComponent({
         const storageRef = storage.ref();
         var fotoUsuario: string;
         if(state.experienciaUsuario == "novato"){
-          fotoUsuario = await storageRef.child("FotosCreacionPerfil/novato.jpg").getDownloadURL();
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/novato.jpeg").getDownloadURL();
         }else if(state.experienciaUsuario == "normal"){
-          fotoUsuario = await storageRef.child("FotosCreacionPerfil/normal.jpg").getDownloadURL();
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/normal.jpeg").getDownloadURL();
         }else if(state.experienciaUsuario == "experto"){
-          fotoUsuario = await storageRef.child("FotosCreacionPerfil/experto.jpg").getDownloadURL();
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/experto.jpeg").getDownloadURL();
         }else if(state.experienciaUsuario == "pro"){
-          fotoUsuario = await storageRef.child("FotosCreacionPerfil/pro.jpg").getDownloadURL();
+          fotoUsuario = await storageRef.child("FotosCreacionPerfil/pro.jpeg").getDownloadURL();
         }
         db.collection("users").doc(authRes.user?.uid).set({
           nombre,

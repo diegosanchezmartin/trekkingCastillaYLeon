@@ -23,12 +23,10 @@
           <ion-toolbar>
             <ion-title size="large">Explora</ion-title>
           </ion-toolbar>
-          <ion-button color="medium">
-            <ion-icon :icon="searchOutline" />
-          </ion-button>
+          <ion-searchbar animated></ion-searchbar>
         </ion-item>
       </ion-header>
-      <ion-list>
+      <ion-list class="listaRutas">
         <ion-item v-for="ruta in rutas" v-bind:key="ruta.id">
           <ion-card class="ruta">
             <ion-card-header>
@@ -103,6 +101,9 @@
 </template>
 
 <script lang="ts">
+interface SearchbarChangeEventDetail {
+  value?: string;
+}
 import { defineComponent, reactive, toRefs } from "vue";
 import { db } from "@/main";
 import { collection, getDocs } from "@firebase/firestore";
@@ -126,6 +127,7 @@ import {
   IonIcon,
   IonText,
   IonImg,
+  IonSearchbar,
 } from "@ionic/vue";
 import {
   starOutline,
@@ -173,6 +175,7 @@ export default defineComponent({
     SwiperSlide,
     IonImg,
     iconoSVG,
+    IonSearchbar,
   },
   data() {
     return {
@@ -180,6 +183,7 @@ export default defineComponent({
     };
   },
   setup() {
+    
     const state = reactive({
       rutas: [],
     });

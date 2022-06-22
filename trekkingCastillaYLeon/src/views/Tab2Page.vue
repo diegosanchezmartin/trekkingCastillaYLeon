@@ -184,25 +184,40 @@ export default defineComponent({
 
                   //}
                 } else {
-                  if (
-                    parseInt(doc.data().puntuacion) > parseInt(this.segundo.pts)
-                  ) {
-                    this.tercero.name = this.segundo.name;
-                    this.tercero.pts = this.segundo.pts;
-                    this.tercero.photo = this.segundo.photo;
+                  if (this.segundo.name == "") {
                     this.segundo.name =
                       doc.data().nombre + " " + doc.data().apellidos;
-                    this.segundo.pts = doc.data().puntuacion;
+                    this.segundo.pts = parseInt(doc.data().puntuacion);
                     this.segundo.photo = doc.data().fotoPerfil;
                   } else {
                     if (
                       parseInt(doc.data().puntuacion) >
-                      parseInt(this.tercero.pts)
+                      parseInt(this.segundo.pts)
                     ) {
-                      this.tercero.name =
+                      this.tercero.name = this.segundo.name;
+                      this.tercero.pts = this.segundo.pts;
+                      this.tercero.photo = this.segundo.photo;
+                      this.segundo.name =
                         doc.data().nombre + " " + doc.data().apellidos;
-                      this.tercero.pts = doc.data().puntuacion;
-                      this.tercero.photo = doc.data().fotoPerfil;
+                      this.segundo.pts = doc.data().puntuacion;
+                      this.segundo.photo = doc.data().fotoPerfil;
+                    } else {
+                      if (this.tercero.name == "") {
+                        this.tercero.name =
+                          doc.data().nombre + " " + doc.data().apellidos;
+                        this.tercero.pts = parseInt(doc.data().puntuacion);
+                        this.tercero.photo = doc.data().fotoPerfil;
+                      } else {
+                        if (
+                          parseInt(doc.data().puntuacion) >
+                          parseInt(this.tercero.pts)
+                        ) {
+                          this.tercero.name =
+                            doc.data().nombre + " " + doc.data().apellidos;
+                          this.tercero.pts = doc.data().puntuacion;
+                          this.tercero.photo = doc.data().fotoPerfil;
+                        }
+                      }
                     }
                   }
                 }
@@ -271,6 +286,15 @@ export default defineComponent({
   },
   watch: {
     $route(to, from) {
+      this.primero.photo = "";
+      this.primero.name = "";
+      this.primero.ptos = 0;
+      this.segundo.photo = "";
+      this.segundo.name = "";
+      this.segundo.ptos = 0;
+      this.tercero.photo = "";
+      this.tercero.name = "";
+      this.tercero.ptos = 0;
       this.provincial = true;
       this.obtenerRankingProvincial();
     },
