@@ -128,6 +128,7 @@ import {
   IonText,
   IonImg,
   IonSearchbar,
+  IonGrid,
 } from "@ionic/vue";
 import {
   starOutline,
@@ -176,6 +177,7 @@ export default defineComponent({
     IonImg,
     iconoSVG,
     IonSearchbar,
+    IonGrid,
   },
   data() {
     return {

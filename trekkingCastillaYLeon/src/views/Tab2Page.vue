@@ -132,14 +132,6 @@ export default defineComponent({
       this.tercero.photo = "";
       this.tercero.name = "";
       this.tercero.ptos = 0;
-      console.log("Reseteados, sus valores son: ");
-      console.log("Primero: ");
-      console.log(this.primero.name);
-      console.log("Segundo: ");
-      console.log(this.segundo.name);
-      console.log("Tercero: ");
-      console.log(this.tercero.name);
-      console.log(this.provincial);
       if (this.provincial == true) {
         this.obtenerRankingRegional();
         this.provincial = false;

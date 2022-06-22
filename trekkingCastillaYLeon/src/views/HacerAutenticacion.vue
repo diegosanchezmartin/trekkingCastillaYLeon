@@ -255,6 +255,7 @@ export default defineComponent({
           rutasModificadas: state.contadorInicial,
           provincia: state.provinciaUsuario,
           fotoPerfil: fotoUsuario,
+          infoUsuario: "Nuev@ aventurer@ con muchas ganas de patear!"
         });
         const user = auth.currentUser;
         user.updateProfile({

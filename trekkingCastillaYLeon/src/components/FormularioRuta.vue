@@ -51,6 +51,7 @@
               placeholder="Selecciona la categoría de la ruta"
               required
               v-model="tipoRutaIntroducido"
+              @ionChange = "obtenerNivelUsuario()"
             >
               <ion-select-option value="rutaLineal"
                 >Ruta líneal
@@ -121,11 +122,13 @@
             </ion-select>
           </ion-item>
         </ion-list>
-         <ion-list>
+        <ion-list>
           <ion-list-header>
-            <ion-label>Progreso al siguiente nivel: 50%</ion-label>
+            <ion-label
+              >Progreso al siguiente nivel: {{ progreso * 100 }}%</ion-label
+            >
           </ion-list-header>
-          <ion-progress-bar value="0.5"></ion-progress-bar>
+          <ion-progress-bar :value=progreso></ion-progress-bar>
         </ion-list>
         <ion-button expand="block" fill="outline" color="dark" type="submit">
           Añadir ruta
@@ -136,13 +139,8 @@
 </template>
 
 <script lang="ts">
-import {
-  Camera,
-  CameraResultType,
-  CameraSource,
-  Photo,
-} from "@capacitor/camera";
-import { defineComponent, computed, ref } from "vue";
+import { Camera, CameraResultType } from "@capacitor/camera";
+import { defineComponent, reactive } from "vue";
 import { usernameApp } from "@/views/HacerAutenticacion.vue";
 import {
   IonContent,
@@ -171,7 +169,6 @@ import {
   repeatOutline,
   flagOutline,
 } from "ionicons/icons";
-import { useStore } from "vuex";
 import { usePhotoGallery, UserPhoto } from "../camera/usePhotoGallery";
 import { storage, auth, db } from "../main";
 import firebase from "firebase/compat/app";
@@ -209,7 +206,7 @@ export default defineComponent({
   },
   data() {
     return {
-      niveles: { nivel1: 10, nivel2: 20, nivel3: 35, nivel4: 50, nivel5: 70, nivel6: 85},
+      progreso: 0,
       nombreRutaIntroducido: "",
       infoRutaIntroducido: "",
       imagenesIntroducidas: "",
@@ -223,6 +220,9 @@ export default defineComponent({
     };
   },
   setup() {
+    const state = reactive({
+      puntosUser: 0,
+    });
     var images = [];
     var urlsFotos = [];
     var url = "";
@@ -247,6 +247,84 @@ export default defineComponent({
         urlsFotos.push(url);
       }
     };
+    async function obtenerNivelUsuario() {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((result) => {
+          state.puntosUser = result.data().puntuacion;
+          if (result.data().puntuacion <= 10) {
+            if (this.tipoRutaIntroducido == "") {
+              this.progreso = state.puntosUser / 10;
+            } else if (
+              this.tipoRutaIntroducido == "rutaLineal" ||
+              this.tipoRutaIntroducido == "rutaCircular"
+            ) {
+              this.progreso = (state.puntosUser + 5) / 10;
+            } else if (this.tipoRutaIntroducido == "ascension") {
+              this.progreso = (state.puntosUser + 15) / 10;
+            }
+          } else if (
+            result.data().puntuacion > 10 &&
+            result.data().puntuacion <= 20
+          ) {
+            if (this.tipoRutaIntroducido == "") {
+              this.progreso = (state.puntosUser - 10) / 10;
+            } else if (
+              this.tipoRutaIntroducido == "rutaLineal" ||
+              this.tipoRutaIntroducido == "rutaCircular"
+            ) {
+              this.progreso = (state.puntosUser - 10 + 5) / 10;
+            } else if (this.tipoRutaIntroducido == "ascension") {
+              this.progreso = (state.puntosUser - 10 + 15) / 10;
+            }
+          } else if (
+            result.data().puntuacion > 20 &&
+            result.data().puntuacion <= 35
+          ) {
+            if (this.tipoRutaIntroducido == "") {
+              this.progreso = (state.puntosUser - 20) / 15;
+            } else if (
+              this.tipoRutaIntroducido == "rutaLineal" ||
+              this.tipoRutaIntroducido == "rutaCircular"
+            ) {
+              this.progreso = (state.puntosUser - 20 + 5) / 10;
+            } else if (this.tipoRutaIntroducido == "ascension") {
+              this.progreso = (state.puntosUser - 20 + 15) / 10;
+            }
+          } else if (
+            result.data().puntuacion > 35 &&
+            result.data().puntuacion <= 50
+          ) {
+            if (this.tipoRutaIntroducido == "") {
+              this.progreso = (state.puntosUser - 35) / 15;
+            } else if (
+              this.tipoRutaIntroducido == "rutaLineal" ||
+              this.tipoRutaIntroducido == "rutaCircular"
+            ) {
+              this.progreso = (state.puntosUser - 35 + 5) / 10;
+            } else if (this.tipoRutaIntroducido == "ascension") {
+              this.progreso = (state.puntosUser - 35 + 15) / 10;
+            }
+          } else if (
+            result.data().puntuacion > 50 &&
+            result.data().puntuacion <= 70
+          ) {
+            if (this.tipoRutaIntroducido == "") {
+              this.progreso = (state.puntosUser - 50) / 20;
+            } else if (
+              this.tipoRutaIntroducido == "rutaLineal" ||
+              this.tipoRutaIntroducido == "rutaCircular"
+            ) {
+              this.progreso = (state.puntosUser - 50 + 5) / 10;
+            } else if (this.tipoRutaIntroducido == "ascension") {
+              this.progreso = (state.puntosUser - 50 + 15) / 10;
+            }
+          } else if (result.data().puntuacion > 70) {
+            this.progreso = 1;
+          }
+        });
+    }
     async function guardarRuta() {
       const current = new Date();
       db.collection("rutas")
@@ -254,7 +332,6 @@ export default defineComponent({
         .set({
           nombreRuta: this.nombreRutaIntroducido,
           infoRuta: this.infoRutaIntroducido,
-          //imagenesIntroducidas: this.photos,
           imagenesIntroducidas: urlsFotos,
           usuarioIntroducido: auth.currentUser.displayName,
           nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
@@ -263,13 +340,16 @@ export default defineComponent({
           kilometros: this.kilometrosIntroducidos,
           fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
           iconoIntroducido: this.iconoIntroducido,
-          emailUsuario:auth.currentUser.email,
+          emailUsuario: auth.currentUser.email,
           fechaPublicacion: `${current.getDate()}/${
             current.getMonth() + 1
           }/${current.getFullYear()}`,
         });
 
-      if (this.tipoRutaIntroducido == "rutaCircular" || this.tipoRutaIntroducido == "rutaLineal") {
+      if (
+        this.tipoRutaIntroducido == "rutaCircular" ||
+        this.tipoRutaIntroducido == "rutaLineal"
+      ) {
         db.collection("users")
           .doc(auth.currentUser.uid)
           .update({
@@ -284,7 +364,7 @@ export default defineComponent({
             puntuacion: firebase.firestore.FieldValue.increment(15),
           });
       }
- 
+
       db.collection("users")
         .doc(auth.currentUser.uid)
         .collection("rutasUsuario")
@@ -293,16 +373,6 @@ export default defineComponent({
           imagenesIntroducidas: urlsFotos,
         })
         .then(this.$emit("anadir-ruta"));
-
-      /*urlsFotos.forEach(async urlFoto => {
-        await db
-          .collection("users")
-          .doc(user?.uid)
-          .collection("images")
-          .add({
-            image: urlFoto,
-          })
-      });*/
     }
 
     const { photos, takePhoto } = usePhotoGallery();
@@ -317,7 +387,20 @@ export default defineComponent({
       photos,
       takePicture,
       guardarRuta,
+      obtenerNivelUsuario,
     };
+  },
+  mounted() {
+    this.obtenerNivelUsuario();
   },
 });
 </script>
+
+<style scoped>
+.ios-padding {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+</style>

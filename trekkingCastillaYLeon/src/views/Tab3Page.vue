@@ -6,6 +6,11 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
+      <ion-header collapse="condense">
+        <ion-toolbar>
+          <ion-title size="large">Perfil</ion-title>
+        </ion-toolbar>
+      </ion-header>
       <ion-card>
         <swiper
           :modules="modules"
@@ -141,7 +146,7 @@
         </ion-card-header>
         <ion-card-content>
           <ion-grid>
-            <ion-row> Nuevo aventurero con muchas ganas de patear! </ion-row>
+            <ion-row> {{ infoUsuario }} </ion-row>
             <ion-row class="filaPerfilAjustes">
               <ion-col class="columnaPerfil">
                 <ion-button class="botonPerfil" color="medium">
@@ -157,19 +162,31 @@
           </ion-grid>
         </ion-card-content>
 
-        <ion-card>
-          <ion-row size="4">
-            <ion-col size="4" v-for="ruta in rutas" v-bind:key="ruta.id">
-              <swiper pager="true" :options="slideOpts">
-                <swiper-slide
-                  v-for="(imagen, index) in ruta.fotos"
-                  v-bind:key="index"
-                >
-                  <ion-img :src="imagen" />
-                </swiper-slide>
-              </swiper>
-            </ion-col>
-          </ion-row>
+        <ion-card class="contenedorRutas">
+          <ion-card-header>
+            <ion-card-subtitle class="tiposRutas"
+              ><ion-icon class="elipseRealizadas" :icon="ellipse" /> Realizadas
+              <ion-icon class="elipseAnadidas" :icon="ellipse" /> Añadidas
+              <ion-icon class="elipseModificadas" :icon="ellipse" />
+              Modificadas</ion-card-subtitle
+            >
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row size="4">
+                <ion-col size="4" v-for="ruta in rutas" v-bind:key="ruta.id">
+                  <swiper pager="true" :options="slideOpts">
+                    <swiper-slide
+                      v-for="(imagen, index) in ruta.fotos"
+                      v-bind:key="index"
+                    >
+                      <ion-img :src="imagen" />
+                    </swiper-slide>
+                  </swiper>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
         </ion-card>
       </ion-card>
     </ion-content>
@@ -179,7 +196,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
 import { doc, getDoc } from "@firebase/firestore";
-
+import { ellipse } from "ionicons/icons";
 import {
   IonPage,
   IonHeader,
@@ -237,6 +254,7 @@ export default defineComponent({
       puntosUser: 0,
       nivelUser: "",
       provinciaUser: "",
+      infoUsuario: "",
     });
     const currentUser = auth.currentUser;
     const slideOpts = {
@@ -260,26 +278,27 @@ export default defineComponent({
             result.data().nombre + " " + result.data().apellidos;
           state.puntosUser = result.data().puntuacion;
           state.provinciaUser = result.data().provincia;
-          if (result.data().puntuacion < 10) {
+          state.infoUsuario = result.data().infoUsuario;
+          if (result.data().puntuacion <= 10) {
             state.nivelUser = "Novat@";
           } else if (
             result.data().puntuacion > 10 &&
-            result.data().puntuacion < 20
+            result.data().puntuacion <= 20
           ) {
             state.nivelUser = "Caminante";
           } else if (
             result.data().puntuacion > 20 &&
-            result.data().puntuacion < 35
+            result.data().puntuacion <= 35
           ) {
             state.nivelUser = "Intrépid@";
           } else if (
             result.data().puntuacion > 35 &&
-            result.data().puntuacion < 50
+            result.data().puntuacion <= 50
           ) {
             state.nivelUser = "Ruter@";
           } else if (
             result.data().puntuacion > 50 &&
-            result.data().puntuacion < 70
+            result.data().puntuacion <= 70
           ) {
             state.nivelUser = "Expert@";
           } else if (result.data().puntuacion > 70) {
@@ -305,6 +324,7 @@ export default defineComponent({
       currentUser,
       slideOpts,
       modules: [Navigation, Pagination],
+      ellipse,
     };
   },
   watch: {
@@ -320,8 +340,26 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.elipseRealizadas {
+  color: green;
+}
+.elipseAnadidas {
+  color: orange;
+}
+.elipseModificadas {
+  color: darkred;
+}
+.contenedorRutas {
+  margin: 0% 2% 2% 2%;
+}
+.tiposRutas {
+  font-size: 10px;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+}
 .filaPerfilAjustes {
-  padding: 10% 0% 0% 0;
+  padding: 5% 0% 0% 0;
 }
 .botonPerfil {
   width: 80%;
