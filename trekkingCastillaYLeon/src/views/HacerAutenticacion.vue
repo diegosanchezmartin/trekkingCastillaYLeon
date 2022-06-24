@@ -198,6 +198,7 @@ export default defineComponent({
       experienciaUsuario: "",
       modo: ModoDeAutenticacion.IniciarSesion,
       mensajeError: "",
+      infoUsuario: "Nuev@ aventurer@ con muchas ganas de patear!",
       contadorInicial: 0,
     });
     const IniciarSesionConEmailYConstaseña = async (
@@ -255,7 +256,7 @@ export default defineComponent({
           rutasModificadas: state.contadorInicial,
           provincia: state.provinciaUsuario,
           fotoPerfil: fotoUsuario,
-          infoUsuario: "Nuev@ aventurer@ con muchas ganas de patear!"
+          infoUsuario: state.infoUsuario,
         });
         const user = auth.currentUser;
         user.updateProfile({

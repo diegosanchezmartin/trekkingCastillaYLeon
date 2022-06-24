@@ -31,7 +31,8 @@
                       <ion-label class="etiquetaRutas" color="primary"
                         >Rutas</ion-label
                       >
-                      <ion-row> </ion-row>
+                    </ion-row>
+                    <ion-row>
                       <ion-label class="etiquetaRutas" color="primary"
                         >realizadas:</ion-label
                       >
@@ -49,7 +50,9 @@
                       <ion-label class="etiquetaRutas" color="secondary"
                         >Rutas</ion-label
                       >
-                      <ion-row> </ion-row>
+                    </ion-row>
+
+                    <ion-row>
                       <ion-label class="etiquetaRutas" color="secondary"
                         >añadidas:</ion-label
                       >
@@ -142,17 +145,78 @@
         </swiper>
         <ion-card-header>
           <ion-card-subtitle>{{ nivelUser }}</ion-card-subtitle>
-          <ion-card-title>{{ nombreUser }}</ion-card-title>
+          <div class="informacionUsuario" v-if="!modificando">
+            <ion-card-title>{{ nombreUser }}</ion-card-title>
+          </div>
+          <div class="informacionUsuario" v-else>
+            <ion-input
+              type="text"
+              maxlength="22"
+              v-model="nuevoNombreIntroducido"
+              class="inputEditarInfoNombre"
+            ></ion-input>
+          </div>
         </ion-card-header>
         <ion-card-content>
           <ion-grid>
-            <ion-row> {{ infoUsuario }} </ion-row>
+            <ion-row>
+              <div class="informacionUsuario" v-if="!modificando">
+                <ion-label>
+                  {{ infoUsuario }}
+                </ion-label>
+              </div>
+              <div class="informacionUsuario" v-else>
+                <ion-input
+                  type="text"
+                  maxlength="110"
+                  v-model="nuevaInfoIntroducida"
+                  class="inputEditarInfo"
+                ></ion-input>
+              </div>
+            </ion-row>
             <ion-row class="filaPerfilAjustes">
               <ion-col class="columnaPerfil">
-                <ion-button class="botonPerfil" color="medium">
+                <ion-button
+                  v-if="!modificando"
+                  @click="botonEditar()"
+                  class="botonPerfil"
+                  color="medium"
+                >
                   Editar perfil
                 </ion-button>
+                <ion-button
+                  v-else
+                  @click="botonEditar()"
+                  class="botonPerfil"
+                  color="success"
+                >
+                  <ion-icon :icon="checkmark"></ion-icon>
+                </ion-button>
               </ion-col>
+              <ion-fab vertical="center" horizontal="center">
+                <ion-fab-button color="dark">
+                  <ion-icon :icon="cog"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-list side="start">
+                  <ion-fab-button color="medium"
+                    ><ion-icon :icon="pencil"></ion-icon
+                  ></ion-fab-button>
+                  <ion-fab-button color="medium"
+                    ><ion-icon :icon="informationOutline"></ion-icon
+                  ></ion-fab-button>
+                  <ion-fab-button color="medium"
+                    ><ion-icon :icon="pencil"></ion-icon
+                  ></ion-fab-button>
+                </ion-fab-list>
+                <ion-fab-list side="end">
+                  <ion-fab-button color="medium"
+                    ><ion-icon :icon="contrast"></ion-icon
+                  ></ion-fab-button>
+                  <ion-fab-button color="medium"
+                    ><ion-icon :icon="alert"></ion-icon
+                  ></ion-fab-button>
+                </ion-fab-list>
+              </ion-fab>
               <ion-col class="columnaPerfil">
                 <ion-button class="botonPerfil" color="medium">
                   Ajustes
@@ -175,7 +239,38 @@
             <ion-grid>
               <ion-row size="4">
                 <ion-col size="4" v-for="ruta in rutas" v-bind:key="ruta.id">
-                  <swiper pager="true" :options="slideOpts">
+                  <swiper
+                    class="swiperAnadida"
+                    pager="true"
+                    :options="slideOpts"
+                    v-if="ruta.estado == 'anadida'"
+                  >
+                    <swiper-slide
+                      v-for="(imagen, index) in ruta.fotos"
+                      v-bind:key="index"
+                    >
+                      <ion-img :src="imagen" />
+                    </swiper-slide>
+                  </swiper>
+                  <swiper
+                    class="swiperRealizada"
+                    pager="true"
+                    :options="slideOpts"
+                    v-else-if="ruta.estado == 'realizada'"
+                  >
+                    <swiper-slide
+                      v-for="(imagen, index) in ruta.fotos"
+                      v-bind:key="index"
+                    >
+                      <ion-img :src="imagen" />
+                    </swiper-slide>
+                  </swiper>
+                  <swiper
+                    class="swiperModificada"
+                    pager="true"
+                    :options="slideOpts"
+                    v-else-if="ruta.estado == 'modificada'"
+                  >
                     <swiper-slide
                       v-for="(imagen, index) in ruta.fotos"
                       v-bind:key="index"
@@ -196,7 +291,15 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
 import { doc, getDoc } from "@firebase/firestore";
-import { ellipse } from "ionicons/icons";
+import {
+  ellipse,
+  checkmark,
+  cog,
+  contrast,
+  pencil,
+  informationOutline,
+  alert,
+} from "ionicons/icons";
 import {
   IonPage,
   IonHeader,
@@ -210,6 +313,11 @@ import {
   IonCol,
   IonRow,
   IonImg,
+  IonInput,
+  IonFab,
+  IonFabButton,
+  IonFabList,
+  IonIcon,
 } from "@ionic/vue";
 
 import { auth, db } from "@/main";
@@ -238,9 +346,17 @@ export default defineComponent({
     Swiper,
     SwiperSlide,
     IonImg,
+    IonInput,
+    IonFab,
+    IonFabButton,
+    IonFabList,
+    IonIcon,
   },
   data() {
     return {
+      nuevoNombreIntroducido: "",
+      nuevaInfoIntroducida: "",
+      modificando: false,
       rutasRealizadas: 0,
       rutasAnadidas: 0,
       rutasModificadas: 0,
@@ -261,6 +377,27 @@ export default defineComponent({
       initialSlide: 0,
       speed: 400,
     };
+    async function botonEditar() {
+      if (this.modificando == false) {
+        this.modificando = true;
+      } else {
+        console.log(this.nuevoNombreIntroducido);
+        console.log(this.nuevaInfoIntroducida);
+        if (this.nuevoNombreIntroducido != "") {
+          state.nombreUser = this.nuevoNombreIntroducido;
+          db.collection("users").doc(auth.currentUser.uid).update({
+            nombre: this.nuevoNombreIntroducido,
+          });
+        }
+        if (this.nuevaInfoIntroducida != "") {
+          state.infoUsuario = this.nuevaInfoIntroducida;
+          db.collection("users").doc(auth.currentUser.uid).update({
+            infoUsuario: this.nuevaInfoIntroducida,
+          });
+        }
+        this.modificando = false;
+      }
+    }
     async function obtenerRutasUsuario() {
       const contadores = doc(db, "users", auth.currentUser.uid);
       const querySnapshot = await getDoc(contadores);
@@ -313,6 +450,7 @@ export default defineComponent({
         .then((querySnapshot) => {
           querySnapshot.forEach((collection) => {
             state.rutas.push({
+              estado: collection.data().estadoRuta,
               fotos: collection.data().imagenesIntroducidas,
             });
           });
@@ -320,11 +458,18 @@ export default defineComponent({
     }
     return {
       obtenerRutasUsuario,
+      botonEditar,
       ...toRefs(state),
       currentUser,
       slideOpts,
       modules: [Navigation, Pagination],
       ellipse,
+      checkmark,
+      cog,
+      pencil,
+      contrast,
+      informationOutline,
+      alert,
     };
   },
   watch: {
@@ -340,6 +485,29 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.inputEditarInfoNombre {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  border: 2px solid black;
+}
+.inputEditarInfo {
+  border: 2px solid black;
+}
+.informacionUsuario {
+  width: 100%;
+}
+.swiperRealizada {
+  border: 3px solid green;
+}
+
+.swiperModificada {
+  border: 3px solid darkRed;
+}
+
+.swiperAnadida {
+  border: 3px solid orange;
+}
 .elipseRealizadas {
   color: green;
 }

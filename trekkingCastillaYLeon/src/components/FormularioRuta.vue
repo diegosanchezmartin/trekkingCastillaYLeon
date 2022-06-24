@@ -29,19 +29,41 @@
               v-model="infoRutaIntroducido"
             ></ion-input>
           </ion-item>
-          <ion-item>
-            <ion-label>Añade fotos de la ruta</ion-label>
-            <ion-fab horizontal="end">
-              <ion-fab-button size="small" color="dark" @click="takePicture">
-                <ion-icon :icon="addOutline" />
-              </ion-fab-button>
-            </ion-fab>
+          <ion-item class="itemFotos">
             <ion-grid>
-              <ion-row>
-                <ion-col size="6" :key="photo" v-for="photo in urlsFotos">
-                  <ion-img :src="photo"></ion-img>
-                </ion-col>
-              </ion-row>
+              <ion-col>
+                <ion-row>
+                  <ion-label class="itemFilaFotos"
+                    >Añade fotos de la ruta</ion-label
+                  >
+                </ion-row>
+                <ion-row>
+                  <ion-item class="itemFilaFotos">
+                    <ion-fab horizontal="center">
+                      <ion-fab-button
+                        size="small"
+                        color="dark"
+                        @click="takePicture"
+                      >
+                        <ion-icon :icon="addOutline" />
+                      </ion-fab-button>
+                    </ion-fab>
+                  </ion-item>
+                </ion-row>
+                <ion-row>
+                  <ion-grid>
+                    <ion-row size="3">
+                      <ion-col
+                        size="3"
+                        v-for="imagen in urlsFotos"
+                        v-bind:key="imagen.id"
+                      >
+                        <ion-img :src="imagen" ref="imagen"></ion-img>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-row>
+              </ion-col>
             </ion-grid>
           </ion-item>
           <ion-item>
@@ -51,7 +73,7 @@
               placeholder="Selecciona la categoría de la ruta"
               required
               v-model="tipoRutaIntroducido"
-              @ionChange = "obtenerNivelUsuario()"
+              @ionChange="obtenerNivelUsuario()"
             >
               <ion-select-option value="rutaLineal"
                 >Ruta líneal
@@ -128,7 +150,7 @@
               >Progreso al siguiente nivel: {{ progreso * 100 }}%</ion-label
             >
           </ion-list-header>
-          <ion-progress-bar :value=progreso></ion-progress-bar>
+          <ion-progress-bar :value="progreso"></ion-progress-bar>
         </ion-list>
         <ion-button expand="block" fill="outline" color="dark" type="submit">
           Añadir ruta
@@ -172,6 +194,9 @@ import {
 import { usePhotoGallery, UserPhoto } from "../camera/usePhotoGallery";
 import { storage, auth, db } from "../main";
 import firebase from "firebase/compat/app";
+import { Cropper } from "vue-advanced-cropper";
+import "vue-advanced-cropper/dist/style.css";
+import Vue from "vue";
 
 function uuidv4() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -203,6 +228,7 @@ export default defineComponent({
     IonGrid,
     IonPage,
     IonProgressBar,
+    //Cropper,
   },
   data() {
     return {
@@ -224,7 +250,7 @@ export default defineComponent({
       puntosUser: 0,
     });
     var images = [];
-    var urlsFotos = [];
+    const urlsFotos = reactive([""]);
     var url = "";
     const user = auth.currentUser;
     const takePicture = async () => {
@@ -239,12 +265,19 @@ export default defineComponent({
         const storageRef = storage.ref();
         await storageRef
           .child(filepath)
-          .putString(image.base64String, "base64");
-        url = await storageRef.child(filepath).getDownloadURL();
-        console.log(image);
-        images.push(image);
-        console.log(url);
-        urlsFotos.push(url);
+          .putString(image.base64String, "base64")
+          .then((snapshot) => {
+            storageRef
+              .child(filepath)
+              .getDownloadURL()
+              .then((url) => {
+                console.log(image);
+                images.push(image);
+                console.log(url);
+                urlsFotos.push(url);
+                console.log(urlsFotos);
+              });
+          });
       }
     };
     async function obtenerNivelUsuario() {
@@ -370,6 +403,7 @@ export default defineComponent({
         .collection("rutasUsuario")
         .doc(this.nombreRutaIntroducido)
         .set({
+          estadoRuta: "anadida",
           imagenesIntroducidas: urlsFotos,
         })
         .then(this.$emit("anadir-ruta"));
@@ -397,6 +431,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.itemFotos {
+  display: flex;
+}
+.itemFilaFotos {
+  width: 100%;
+  text-align: center;
+  padding: 0% 0% 4% 0%;
+}
 .ios-padding {
   height: 100%;
   display: flex;

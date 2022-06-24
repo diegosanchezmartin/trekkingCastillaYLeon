@@ -54,6 +54,14 @@
                 <ion-img :src="photo" />
               </swiper-slide>
             </swiper>
+            <ion-row>
+              <ion-col class="columnaComentarios">
+                <ion-button class="botonComentarios"><ion-icon :icon="heart" /></ion-button>
+              </ion-col>
+              <ion-col class="columnaComentarios">
+                <ion-button class="botonComentarios"><ion-icon :icon="chatbubbles" /></ion-button>
+              </ion-col>
+            </ion-row>
             <ion-card-content>
               <ion-item>
                 <ion-avatar slot="end">
@@ -140,6 +148,8 @@ import {
   addCircleOutline,
   searchOutline,
   locationOutline,
+  heart,
+  chatbubbles,
 } from "ionicons/icons";
 import { useIonRouter } from "@ionic/vue";
 import iconoSVG from "../components/IconoSVG.vue";
@@ -185,7 +195,6 @@ export default defineComponent({
     };
   },
   setup() {
-    
     const state = reactive({
       rutas: [],
     });
@@ -276,6 +285,8 @@ export default defineComponent({
       addCircleOutline,
       searchOutline,
       locationOutline,
+      heart,
+      chatbubbles,
       slideOpts,
       goAddRoute,
       modules: [Navigation, Pagination],
@@ -294,17 +305,22 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.botonComentarios {
+  width: 80%;
+}
+.columnaComentarios {
+  display: flex;
+  justify-content: center;
+}
 .grid {
   display: flex;
   height: 100%;
   align-items: center;
 }
-
 .col {
   display: flex;
   justify-content: center;
 }
-
 .row {
   width: 100%;
 }
