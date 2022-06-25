@@ -52,13 +52,18 @@
                 </ion-row>
                 <ion-row>
                   <ion-grid>
-                    <ion-row size="3">
+                    <ion-row size="4">
                       <ion-col
-                        size="3"
+                        size="4"
                         v-for="imagen in urlsFotos"
-                        v-bind:key="imagen.id"
+                        v-bind:key="imagen"
                       >
-                        <ion-img :src="imagen" ref="imagen"></ion-img>
+                        <cropper
+                          :stencil-props="{
+                            aspectRatio: 1 / 1,
+                          }"
+                          :src="imagen"
+                        />
                       </ion-col>
                     </ion-row>
                   </ion-grid>
@@ -124,25 +129,6 @@
               <ion-select-option value="5">5 estrellas</ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-item>
-            <ion-label position="floating"
-              >Recomendaciones {{ value }}</ion-label
-            >
-            <ion-select
-              interface="popover"
-              multiple="true"
-              placeholder="¿Quieres añadir alguna recomendación?"
-            >
-              <ion-select-option value="Gorra">Gorra</ion-select-option>
-              <ion-select-option value="RaquetasNieve"
-                >Raquetas de nieve</ion-select-option
-              >
-              <ion-select-option value="Agua">Agua</ion-select-option>
-              <ion-select-option value="Palos">Palos</ion-select-option>
-              <ion-select-option value="Brújula">Brújula</ion-select-option>
-              <ion-select-option value="Ropa">Ropa térmica</ion-select-option>
-            </ion-select>
-          </ion-item>
         </ion-list>
         <ion-list>
           <ion-list-header>
@@ -177,12 +163,12 @@ import {
   IonIcon,
   IonFab,
   IonFabButton,
-  IonImg,
   IonCol,
   IonRow,
   IonGrid,
   IonPage,
   IonProgressBar,
+  modalController,
 } from "@ionic/vue";
 
 import {
@@ -196,7 +182,7 @@ import { storage, auth, db } from "../main";
 import firebase from "firebase/compat/app";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
-import Vue from "vue";
+import Modal from "./Modal.vue";
 
 function uuidv4() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -222,13 +208,11 @@ export default defineComponent({
     IonIcon,
     IonFab,
     IonFabButton,
-    IonImg,
     IonCol,
     IonRow,
     IonGrid,
     IonPage,
     IonProgressBar,
-    //Cropper,
   },
   data() {
     return {
@@ -250,9 +234,26 @@ export default defineComponent({
       puntosUser: 0,
     });
     var images = [];
-    const urlsFotos = reactive([""]);
+    const urlsFotos: Array<string> = reactive([]);
     var url = "";
     const user = auth.currentUser;
+    const openModal = async (imagenURL) => {
+      const modal = await modalController.create({
+        component: Modal,
+        componentProps: {
+          image: imagenURL,
+        },
+      });
+      modal.present();
+
+      const { data, role } = await modal.onWillDismiss();
+
+      if (role === "confirm") {
+        console.log(`${data}`);
+        urlsFotos.push(`${data}`);
+        console.log(`${data}`);
+      }
+    };
     const takePicture = async () => {
       const image = await Camera.getPhoto({
         quality: 90,
@@ -273,9 +274,7 @@ export default defineComponent({
               .then((url) => {
                 console.log(image);
                 images.push(image);
-                console.log(url);
-                urlsFotos.push(url);
-                console.log(urlsFotos);
+                openModal(url);
               });
           });
       }

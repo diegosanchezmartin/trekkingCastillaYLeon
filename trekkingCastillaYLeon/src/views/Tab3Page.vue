@@ -193,30 +193,6 @@
                   <ion-icon :icon="checkmark"></ion-icon>
                 </ion-button>
               </ion-col>
-              <ion-fab vertical="center" horizontal="center">
-                <ion-fab-button color="dark">
-                  <ion-icon :icon="cog"></ion-icon>
-                </ion-fab-button>
-                <ion-fab-list side="start">
-                  <ion-fab-button color="medium"
-                    ><ion-icon :icon="pencil"></ion-icon
-                  ></ion-fab-button>
-                  <ion-fab-button color="medium"
-                    ><ion-icon :icon="informationOutline"></ion-icon
-                  ></ion-fab-button>
-                  <ion-fab-button color="medium"
-                    ><ion-icon :icon="pencil"></ion-icon
-                  ></ion-fab-button>
-                </ion-fab-list>
-                <ion-fab-list side="end">
-                  <ion-fab-button color="medium"
-                    ><ion-icon :icon="contrast"></ion-icon
-                  ></ion-fab-button>
-                  <ion-fab-button color="medium"
-                    ><ion-icon :icon="alert"></ion-icon
-                  ></ion-fab-button>
-                </ion-fab-list>
-              </ion-fab>
               <ion-col class="columnaPerfil">
                 <ion-button class="botonPerfil" color="medium">
                   Ajustes
@@ -314,9 +290,6 @@ import {
   IonRow,
   IonImg,
   IonInput,
-  IonFab,
-  IonFabButton,
-  IonFabList,
   IonIcon,
 } from "@ionic/vue";
 
@@ -347,9 +320,6 @@ export default defineComponent({
     SwiperSlide,
     IonImg,
     IonInput,
-    IonFab,
-    IonFabButton,
-    IonFabList,
     IonIcon,
   },
   data() {

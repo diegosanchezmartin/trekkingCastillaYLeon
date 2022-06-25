@@ -15,6 +15,52 @@
       </ion-grid>
     </ion-content>
     <ion-content :fullscreen="true" v-else>
+      <ion-modal
+        :is-open="isOpen"
+        ref="modal"
+        :initial-breakpoint="0.35"
+        :breakpoints="[0.25, 0.5, 0.75, 1]"
+      >
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Comentarios</ion-title>
+            <ion-buttons slot="end">
+              <ion-button color="light" @click="setOpen(false)"
+                >Cerrar</ion-button
+              >
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-item class="itemComentario">
+            <ion-label position="floating">Añade tu comentario</ion-label>
+            <ion-input
+              clear-input
+              type="text"
+              v-model="comentarioIntroducido"
+            ></ion-input
+            ><ion-icon
+              :icon="arrowDownCircleOutline"
+              slot="end"
+              @click="anadirComentario()"
+            />
+          </ion-item>
+          <ion-list class="list">
+            <ion-item
+              v-for="comentario in comentarios"
+              v-bind:key="comentario.id"
+              class="item"
+            >
+              <ion-avatar class="avatar" slot="start">
+                <ion-img :src="comentario.fotoPerfilUsuario"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h5>{{ comentario.creador }}: {{ comentario.comentario }}</h5>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-modal>
       <ion-header collapse="condense">
         <ion-item>
           <ion-button @click="goAddRoute()" color="medium">
@@ -40,29 +86,37 @@
                 </ion-label>
               </ion-item>
             </ion-card-header>
-            <swiper
-              :modules="modules"
-              pager="true"
-              :options="slideOpts"
-              navigation
-              :pagination="{ clickable: true }"
-            >
-              <swiper-slide
-                v-for="(photo, index) in ruta.imagenesIntroducidas"
-                :key="index"
-              >
-                <ion-img :src="photo" />
-              </swiper-slide>
-            </swiper>
-            <ion-row>
-              <ion-col class="columnaComentarios">
-                <ion-button class="botonComentarios"><ion-icon :icon="heart" /></ion-button>
-              </ion-col>
-              <ion-col class="columnaComentarios">
-                <ion-button class="botonComentarios"><ion-icon :icon="chatbubbles" /></ion-button>
-              </ion-col>
-            </ion-row>
-            <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <swiper
+                  :modules="modules"
+                  pager="true"
+                  :options="slideOpts"
+                  navigation
+                  :pagination="{ clickable: true }"
+                >
+                  <swiper-slide
+                    v-for="(photo, index) in ruta.imagenesIntroducidas"
+                    :key="index"
+                  >
+                    <ion-img :src="photo" />
+                  </swiper-slide>
+                </swiper>
+              </ion-row>
+              <ion-row>
+                <ion-col class="columnaComentarios">
+                  <ion-button class="botonComentarios"
+                    ><ion-icon :icon="heart"
+                  /></ion-button>
+                </ion-col>
+                <ion-col class="columnaComentarios">
+                  <ion-button class="botonComentarios" @click="setOpen(true)"
+                    ><ion-icon :icon="chatbubbles"
+                  /></ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <ion-card-content class="cardContent"> 
               <ion-item>
                 <ion-avatar slot="end">
                   <img :src="ruta.fotoPerfilUsuarioIntroducida" />
@@ -109,11 +163,8 @@
 </template>
 
 <script lang="ts">
-interface SearchbarChangeEventDetail {
-  value?: string;
-}
 import { defineComponent, reactive, toRefs } from "vue";
-import { db } from "@/main";
+import { db, auth } from "@/main";
 import { collection, getDocs } from "@firebase/firestore";
 import {
   IonPage,
@@ -122,6 +173,7 @@ import {
   IonTitle,
   IonContent,
   IonButton,
+  IonButtons,
   IonItem,
   IonList,
   IonCard,
@@ -137,6 +189,8 @@ import {
   IonImg,
   IonSearchbar,
   IonGrid,
+  IonModal,
+  IonInput,
 } from "@ionic/vue";
 import {
   starOutline,
@@ -150,6 +204,7 @@ import {
   locationOutline,
   heart,
   chatbubbles,
+  arrowDownCircleOutline,
 } from "ionicons/icons";
 import { useIonRouter } from "@ionic/vue";
 import iconoSVG from "../components/IconoSVG.vue";
@@ -170,6 +225,7 @@ export default defineComponent({
     IonContent,
     IonPage,
     IonButton,
+    IonButtons,
     IonItem,
     IonList,
     IonCard,
@@ -188,15 +244,25 @@ export default defineComponent({
     iconoSVG,
     IonSearchbar,
     IonGrid,
+    IonModal,
+    IonInput,
   },
   data() {
     return {
       cargando: false,
+      isOpen: false,
+      comentarioIntroducido: "",
     };
+  },
+  methods: {
+    setOpen(isOpen: boolean) {
+      this.isOpen = isOpen;
+    },
   },
   setup() {
     const state = reactive({
       rutas: [],
+      comentarios: [],
     });
     const ionRouter = useIonRouter();
     const slideOpts = {
@@ -206,6 +272,25 @@ export default defineComponent({
     const goAddRoute = async () => {
       ionRouter.push("/tabs/anadirRutaNueva");
     };
+    async function anadirComentario() {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((result) => {
+          const current = new Date();
+          state.comentarios.push({
+            id: result.id,
+            creador: auth.currentUser.displayName,
+            comentario: this.comentarioIntroducido,
+            fechaPublicacion: `${current.getDate()}/${
+              current.getMonth() + 1
+            }/${current.getFullYear()}`,
+            fotoPerfilUsuario: result.data().fotoPerfil,
+          });
+          this.comentarioIntroducido = "";
+        });
+    }
+
     async function obtenerRutasDisponibles() {
       this.cargando = true;
       const querySnapshot = await getDocs(collection(db, "rutas"));
@@ -275,6 +360,7 @@ export default defineComponent({
 
     return {
       obtenerRutasDisponibles,
+      anadirComentario,
       ...toRefs(state),
       timeOutline,
       starOutline,
@@ -287,6 +373,7 @@ export default defineComponent({
       locationOutline,
       heart,
       chatbubbles,
+      arrowDownCircleOutline,
       slideOpts,
       goAddRoute,
       modules: [Navigation, Pagination],
@@ -305,6 +392,31 @@ export default defineComponent({
 </script>
 
 <style scoped>
+ion-modal {
+  --border-radius: 16px;
+}
+
+ion-modal ion-toolbar {
+  --background: rgb(14 116 144);
+  --color: white;
+}
+
+.cardContent {
+  padding-top: 0px;
+}
+.itemComentario {
+  align-items: center;
+}
+.item {
+  padding: 0% 0% 2% 0%;
+}
+
+.list {
+  padding: 3%;
+}
+.avatar {
+  margin-inline: 0px 12px;
+}
 .botonComentarios {
   width: 80%;
 }
