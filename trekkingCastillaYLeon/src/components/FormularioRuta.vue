@@ -58,10 +58,7 @@
                         v-for="imagen in urlsFotos"
                         v-bind:key="imagen"
                       >
-                        <cropper
-                          :stencil-props="{
-                            aspectRatio: 1 / 1,
-                          }"
+                        <ion-img
                           :src="imagen"
                         />
                       </ion-col>
@@ -132,7 +129,7 @@
         </ion-list>
         <ion-list>
           <ion-list-header>
-            <ion-label
+            <ion-label class="progreso"
               >Progreso al siguiente nivel: {{ progreso * 100 }}%</ion-label
             >
           </ion-list-header>
@@ -249,7 +246,6 @@ export default defineComponent({
       const { data, role } = await modal.onWillDismiss();
 
       if (role === "confirm") {
-        console.log(`${data}`);
         urlsFotos.push(`${data}`);
         console.log(`${data}`);
       }
@@ -430,6 +426,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.progreso {
+  margin-top: 0px;
+}
 .itemFotos {
   display: flex;
 }
