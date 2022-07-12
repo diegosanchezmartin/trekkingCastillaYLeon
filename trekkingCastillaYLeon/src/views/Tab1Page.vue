@@ -312,8 +312,18 @@ export default defineComponent({
         .get()
         .then((result) => {
           const current = new Date();
-
           const id = uuidv4();
+
+          const comentario = {
+            creador: auth.currentUser.displayName,
+            comentario: this.comentarioIntroducido,
+            fechaPublicacion: `${current.getDate()}/${
+              current.getMonth() + 1
+            }/${current.getFullYear()}`,
+            fotoPerfilUsuario: result.data().fotoPerfil,
+          };
+
+          this.comentariosMostrados.push(comentario);
 
           db.collection("rutas")
             .doc(this.nombreRuta)
