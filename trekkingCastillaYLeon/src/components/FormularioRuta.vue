@@ -26,7 +26,7 @@
               value=""
               type="text"
               required
-              v-model="infoRutaIntroducido"
+              v-model="localizacionRuta"
             ></ion-input>
           </ion-item>
           <ion-item class="itemFotos">
@@ -215,15 +215,12 @@ export default defineComponent({
     return {
       progreso: 0,
       nombreRutaIntroducido: "",
-      infoRutaIntroducido: "",
+      localizacionRuta: "",
       imagenesIntroducidas: "",
       usuarioIntroducido: "",
-      nivelUsuarioIntroducido: "novato",
       tipoRutaIntroducido: "",
       valoracionIntroducido: "",
       kilometrosIntroducidos: "",
-      fotoPerfilUsuarioIntroducida: "",
-      iconoIntroducido: "",
     };
   },
   setup() {
@@ -359,15 +356,12 @@ export default defineComponent({
         .doc(this.nombreRutaIntroducido)
         .set({
           nombreRuta: this.nombreRutaIntroducido,
-          infoRuta: this.infoRutaIntroducido,
+          localizacion: this.localizacionRuta,
           imagenesIntroducidas: urlsFotos,
           usuarioIntroducido: auth.currentUser.displayName,
-          nivelUsuarioIntroducido: this.nivelUsuarioIntroducido,
           tipoRuta: this.tipoRutaIntroducido,
           valoracion: this.valoracionIntroducido,
           kilometros: this.kilometrosIntroducidos,
-          fotoPerfilUsuarioIntroducida: this.fotoPerfilUsuarioIntroducida,
-          iconoIntroducido: this.iconoIntroducido,
           emailUsuario: auth.currentUser.email,
           fechaPublicacion: `${current.getDate()}/${
             current.getMonth() + 1

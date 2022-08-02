@@ -210,8 +210,6 @@ export default defineComponent({
           state.mensajeError = "Email y constraseña requeridos!";
           return;
         }
-        usernameApp = email.split("@")[0];
-        console.log(usernameApp = email.split("@")[0]); 
         await auth.signInWithEmailAndPassword(email, contrasena);
         ionRouter.push("/tabs/tab1");
       } catch (error: unknown) {
@@ -246,15 +244,21 @@ export default defineComponent({
         }else if(state.experienciaUsuario == "pro"){
           fotoUsuario = await storageRef.child("FotosCreacionPerfil/pro.jpeg").getDownloadURL();
         }
+        const usernameApp = email.split("@")[0];
+        const current = new Date();
         db.collection("users").doc(authRes.user?.uid).set({
+          nombreUsuario: usernameApp,
           nombre,
           apellidos: state.apellidos,
           email,
+          provincia: state.provinciaUsuario,
+          fechaAlta: `${current.getDate()}/${
+            current.getMonth() + 1
+          }/${current.getFullYear()}`,
           puntuacion: state.contadorInicial,
           rutasRealizadas: state.contadorInicial,
           rutasAnadidas: state.contadorInicial,
           rutasModificadas: state.contadorInicial,
-          provincia: state.provinciaUsuario,
           fotoPerfil: fotoUsuario,
           infoUsuario: state.infoUsuario,
         });
@@ -262,7 +266,6 @@ export default defineComponent({
         user.updateProfile({
           displayName: nombre
         });
-        usernameApp = email.split("@")[0];
         ionRouter.push("/tabs/tab1");
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -273,7 +276,6 @@ export default defineComponent({
     return {
       isOpenRef,
       setOpen,
-      usernameApp,
       ...toRefs(state),
       IniciarSesionConEmailYConstaseña,
       RegistrarseConEmailYcontrasena,

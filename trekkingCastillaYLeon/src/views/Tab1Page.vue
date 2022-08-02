@@ -34,8 +34,8 @@
                 <ion-label>
                   <h4>{{ ruta.nombreRuta }}</h4>
                   <h3>
-                    <ion-icon :icon="locationOutline" /> {{ ruta.infoRuta }}
-                    {{ ruta.kilometros }} Kms
+                    <ion-icon :icon="locationOutline" />
+                    {{ ruta.localizacion }} {{ ruta.kilometros }} Kms
                   </h3>
                 </ion-label>
               </ion-item>
@@ -58,14 +58,14 @@
                 </swiper>
               </ion-row>
               <ion-row>
-                <ion-col class="columnaComentarios">
-                  <ion-button class="botonComentarios"
-                    ><ion-icon :icon="heart"
+                <ion-col v-if="ruta.usuario !== nombreUsuario" class="columnaComentarios">
+                  <ion-button class="botonComentarios" color="success" @click="rutaRealizada(ruta.imagenesIntroducidas)"
+                    ><ion-icon :icon="checkmarkDoneSharp"
                   /></ion-button>
                 </ion-col>
                 <ion-col class="columnaComentarios">
                   <ion-button
-                    class="botonComentarios"
+                    class="botonComentarios" color="medium"
                     @click="setOpen(true, ruta.nombreRuta)"
                     ><ion-icon :icon="chatbubbles"
                   /></ion-button>
@@ -73,7 +73,7 @@
               </ion-row>
             </ion-grid>
             <ion-card-content class="cardContent">
-              <ion-item>
+              <ion-item @click="irPerfilUsuario(ruta.emailUsuario)">
                 <ion-avatar slot="end">
                   <img :src="ruta.fotoPerfilUsuarioIntroducida" />
                 </ion-avatar>
@@ -167,9 +167,7 @@
 <script lang="ts">
 import {
   defineComponent,
-  getCurrentInstance,
   reactive,
-  ref,
   toRefs,
 } from "vue";
 import { db, auth } from "@/main";
@@ -210,7 +208,7 @@ import {
   addCircleOutline,
   searchOutline,
   locationOutline,
-  heart,
+  checkmarkDoneSharp,
   chatbubbles,
   arrowDownCircleOutline,
 } from "ionicons/icons";
@@ -274,6 +272,7 @@ export default defineComponent({
       comentarioIntroducido: "",
       nombreRuta2: "",
       comentariosMostrados: [],
+      nombreUsuario: auth.currentUser.displayName,
     };
   },
   methods: {
@@ -292,6 +291,20 @@ export default defineComponent({
 
       console.log(this.nombreRuta);
       console.log(this.comentariosMostrados);
+    },
+    rutaRealizada(fotos: string[]) {
+      db.collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("rutasUsuario")
+        .doc(this.nombreRutaIntroducido)
+        .set({
+          estadoRuta: "realizada",
+          imagenesIntroducidas: fotos,
+        })
+        .then(this.$emit("anadir-ruta"));
+    },
+    irPerfilUsuario(email: string) {
+      const pedro = "pedro";
     },
   },
   setup() {
@@ -346,6 +359,8 @@ export default defineComponent({
     async function obtenerRutasDisponibles() {
       this.cargando = true;
       var fotoUsuario;
+      var puntosUsuario;
+      var nivelUsuario;
       db.collection("rutas")
         .get()
         .then((querySnapshot) => {
@@ -357,8 +372,35 @@ export default defineComponent({
                 querySnapshot.forEach((docFoto) => {
                   if (docFoto.data().email == doc.data().emailUsuario) {
                     fotoUsuario = docFoto.data().fotoPerfil;
+                    puntosUsuario = docFoto.data().puntuacion;
                   }
                 });
+
+                if (puntosUsuario <= 10) {
+                  nivelUsuario = "Novat@";
+                } else if (
+                  puntosUsuario > 10 &&
+                  puntosUsuario <= 20
+                ) {
+                  nivelUsuario = "Caminante";
+                } else if (
+                  puntosUsuario > 20 &&
+                  puntosUsuario <= 35
+                ) {
+                  nivelUsuario = "Intrépid@";
+                } else if (
+                  puntosUsuario > 35 &&
+                  puntosUsuario <= 50
+                ) {
+                  nivelUsuario = "Ruter@";
+                } else if (
+                  puntosUsuario > 50 &&
+                  puntosUsuario <= 70
+                ) {
+                  nivelUsuario = "Expert@";
+                } else if (puntosUsuario > 70) {
+                  nivelUsuario = "Pro";
+                }
 
                 if (doc.data().tipoRuta == "rutaCircular") {
                   db.collection("rutas")
@@ -378,10 +420,10 @@ export default defineComponent({
                   state.rutas.push({
                     id: doc.id,
                     nombreRuta: doc.data().nombreRuta,
-                    infoRuta: doc.data().infoRuta,
+                    localizacion: doc.data().localizacion,
                     imagenesIntroducidas: doc.data().imagenesIntroducidas,
                     usuario: doc.data().usuarioIntroducido,
-                    nivelUsuario: doc.data().nivelUsuarioIntroducido,
+                    nivelUsuario: nivelUsuario,
                     tipoRuta: "Circular",
                     valoracion: doc.data().valoracion,
                     kilometros: doc.data().kilometros,
@@ -409,10 +451,10 @@ export default defineComponent({
                   state.rutas.push({
                     id: doc.id,
                     nombreRuta: doc.data().nombreRuta,
-                    infoRuta: doc.data().infoRuta,
+                    localizacion: doc.data().localizacion,
                     imagenesIntroducidas: doc.data().imagenesIntroducidas,
                     usuario: doc.data().usuarioIntroducido,
-                    nivelUsuario: doc.data().nivelUsuarioIntroducido,
+                    nivelUsuario: nivelUsuario,
                     tipoRuta: "Lineal",
                     valoracion: doc.data().valoracion,
                     kilometros: doc.data().kilometros,
@@ -441,10 +483,10 @@ export default defineComponent({
                   state.rutas.push({
                     id: doc.id,
                     nombreRuta: doc.data().nombreRuta,
-                    infoRuta: doc.data().infoRuta,
+                    localizacion: doc.data().localizacion,
                     imagenesIntroducidas: doc.data().imagenesIntroducidas,
                     usuario: doc.data().usuarioIntroducido,
-                    nivelUsuario: doc.data().nivelUsuarioIntroducido,
+                    nivelUsuario: nivelUsuario,
                     tipoRuta: "Ascension",
                     valoracion: doc.data().valoracion,
                     kilometros: doc.data().kilometros,
@@ -466,6 +508,21 @@ export default defineComponent({
       console.log(state.rutas);
     }
 
+    /*const searchbar = document.querySelector("ion-searchbar");
+    const items = document.querySelectorAll<HTMLElement>("ion-list");
+    
+    searchbar.addEventListener("ionInput", handleInput);
+
+    function handleInput(event) {
+      const query = event.target.value.toLowerCase();
+      requestAnimationFrame(() => {
+        items.forEach((item) => {
+          const shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
+          item.style.display = shouldShow ? "block" : "none";
+        });
+      });
+    }*/
+
     return {
       obtenerRutasDisponibles,
       anadirComentario,
@@ -479,7 +536,7 @@ export default defineComponent({
       addCircleOutline,
       searchOutline,
       locationOutline,
-      heart,
+      checkmarkDoneSharp,
       chatbubbles,
       arrowDownCircleOutline,
       slideOpts,

@@ -172,9 +172,6 @@ export default defineComponent({
                     doc.data().nombre + " " + doc.data().apellidos;
                   this.primero.pts = doc.data().puntuacion;
                   this.primero.photo = doc.data().fotoPerfil;
-                  //} else {
-
-                  //}
                 } else {
                   if (this.segundo.name == "") {
                     this.segundo.name =
@@ -246,27 +243,36 @@ export default defineComponent({
                 this.primero.pts = doc.data().puntuacion;
                 this.primero.photo = doc.data().fotoPerfil;
               } else {
-                if (
-                  parseInt(doc.data().puntuacion) > parseInt(this.segundo.pts)
-                ) {
-                  this.tercero.name = this.segundo.name;
-                  this.tercero.pts = this.segundo.pts;
-                  this.tercero.photo = this.segundo.photo;
-                  this.segundo.name =
-                    doc.data().nombre + " " + doc.data().apellidos;
-                  this.segundo.pts = doc.data().puntuacion;
-                  this.segundo.photo = doc.data().fotoPerfil;
-                } else {
-                  if (
-                    parseInt(doc.data().puntuacion) > parseInt(this.tercero.pts)
-                  ) {
-                    this.tercero.name =
-                      doc.data().nombre + " " + doc.data().apellidos;
-                    this.tercero.pts = doc.data().puntuacion;
-                    this.tercero.photo = doc.data().fotoPerfil;
+                    if (
+                      parseInt(doc.data().puntuacion) >
+                      parseInt(this.segundo.pts)
+                    ) {
+                      this.tercero.name = this.segundo.name;
+                      this.tercero.pts = this.segundo.pts;
+                      this.tercero.photo = this.segundo.photo;
+                      this.segundo.name =
+                        doc.data().nombre + " " + doc.data().apellidos;
+                      this.segundo.pts = doc.data().puntuacion;
+                      this.segundo.photo = doc.data().fotoPerfil;
+                    } else {
+                      if (this.tercero.name == "") {
+                        this.tercero.name =
+                          doc.data().nombre + " " + doc.data().apellidos;
+                        this.tercero.pts = parseInt(doc.data().puntuacion);
+                        this.tercero.photo = doc.data().fotoPerfil;
+                      } else {
+                        if (
+                          parseInt(doc.data().puntuacion) >
+                          parseInt(this.tercero.pts)
+                        ) {
+                          this.tercero.name =
+                            doc.data().nombre + " " + doc.data().apellidos;
+                          this.tercero.pts = doc.data().puntuacion;
+                          this.tercero.photo = doc.data().fotoPerfil;
+                        }
+                      }
+                    }
                   }
-                }
-              }
             }
           });
         });
