@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">trekkingCastillaYLeon</string>
+    <string name="title_activity_main">trekkingCastillaYLeon</string>
+    <string name="package_name">com.example.trekkingcyl</string>
+    <string name="custom_url_scheme">com.example.trekkingcyl</string>
+</resources>
